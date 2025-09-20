@@ -1,1 +1,1 @@
-# kanban-board
+Radbryt funkar inte i uppgiftsbeskrivningarna i kanban. om jag skapar en uppgift med formularet till vänster och använder radbryt i den rutan och sedan skapar uppgiften, då på själva tavlan är alla radbryt borta och blir bara en textsträng. där vill jag att radbryt ska visas.
