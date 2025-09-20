@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualisering - Kanban-tavla</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Visualisering - Kanban-tavla</h1>
+    <div class="header-actions">
+      <button id="undoBtn" class="btn secondary">Ångra</button>
+      <button id="redoBtn" class="btn secondary">Gör om</button>
+      <button id="exportBtn" class="btn secondary">Exportera</button>
+      <button id="clearBtn" class="btn danger">Rensa</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- Vänsterpanel -->
+    <aside class="left">
+      <form id="taskForm">
+        <h3>Ny uppgift</h3>
+        <div class="field">
+          <label for="title">Titel</label>
+          <input id="title" type="text" />
+        </div>
+        <div class="field">
+          <label for="desc">Beskrivning (valfritt)</label>
+          <textarea id="desc"></textarea>
+        </div>
+        <div class="field">
+          <label for="col">Kolumn</label>
+          <select id="col"></select>
+        </div>
+        <button class="btn" type="submit">Skapa ny uppgift</button>
+      </form>
+
+      <hr />
+
+      <div class="panel-footer">
+        <h3>Kolumner</h3>
+        <form id="colForm" class="inline-form">
+          <input id="colName" type="text" />
+          <button class="btn" type="submit">Skapa ny kolumn</button>
+        </form>
+        <small>Byt namn eller ta bort kolumn via menyn (⋮) i kolumnens rubrik.<br/>Data sparas i <code>data/kanban.json</code> via din lokala server.</small>
+      </div>
+    </aside>
+
+    <!-- Huvudområde -->
+    <main class="right">
+      <div id="board"></div>
+    </main>
+  </div>
+
+  <!-- Modal: redigera uppgift -->
+  <div id="editModal" class="modal" hidden>
+    <div class="modal__content">
+      <h3>Redigera uppgift</h3>
+      <div class="field">
+        <label for="editTitle">Titel</label>
+        <input id="editTitle" type="text" />
+      </div>
+      <div class="field">
+        <label for="editDesc">Beskrivning</label>
+        <textarea id="editDesc"></textarea>
+      </div>
+      <div class="modal__actions">
+        <button id="cancelEdit" class="btn secondary">Avbryt</button>
+        <button id="saveEdit" class="btn">Spara</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: redigera kolumn -->
+  <div id="colModal" class="modal" hidden>
+    <div class="modal__content">
+      <h3>Redigera kolumn</h3>
+      <div class="field">
+        <label for="colEditName">Namn</label>
+        <input id="colEditName" type="text" />
+      </div>
+      <!-- visas endast när man tryckt “Ta bort” och kolumnen innehåller uppgifter -->
+      <div id="colMoveWrap" class="field" hidden>
+        <label for="colMoveSelect">Flytta befintliga uppgifter till</label>
+        <select id="colMoveSelect"></select>
+      </div>
+      <div class="modal__actions">
+        <button id="colCancel" class="btn secondary">Avbryt</button>
+        <button id="colDelete" class="btn danger">Ta bort</button>
+        <button id="colSave" class="btn">Spara</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: ta bort uppgift -->
+  <div id="deleteModal" class="modal" hidden>
+    <div class="modal__content">
+      <h3 class="danger-text">OBS! Vill du ta bort uppgiften?</h3>
+      <div class="modal__actions">
+        <button id="delNo" class="btn secondary">Avbryt</button>
+        <button id="delYes" class="btn danger">Ta bort</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  
+  <footer class="footer">
+    Skapat av Calle Kos
+  </footer>
+</body>
+</html>

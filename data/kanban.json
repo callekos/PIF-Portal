@@ -1,0 +1,17 @@
+{
+  "cols": [
+    {
+      "id": "todo",
+      "name": "Att göra"
+    },
+    {
+      "id": "doing",
+      "name": "Pågår"
+    },
+    {
+      "id": "done",
+      "name": "Klart"
+    }
+  ],
+  "tasks": []
+}
