@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visualisering - Kanban-tavla</title>
   <link rel="stylesheet" href="style.css" />
+<style>
+  /* Visa radbryt i både titel och beskrivning på korten */
+  .card .desc,
+  .card .title {
+    white-space: pre-line;   /* \n visas som nya rader */
+    word-wrap: break-word;   /* bryt långa ord/URL:er snyggt */
+  }
+</style>
 </head>
 <body>
   <header class="app-header">
