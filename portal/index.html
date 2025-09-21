@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="sv">
 <head>
+  <link rel="stylesheet" href="/assets/css/common.css">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PIF-portalen</title>
@@ -31,22 +32,6 @@
       flex-direction:column;
     }
 
-    header{
-      position:sticky;
-      top:0;
-      background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
-      backdrop-filter: blur(6px);
-      border-bottom:1px solid var(--border);
-      z-index:10;
-    }
-    .bar{
-      max-width:1100px;
-      margin:0 auto;
-      padding:16px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
     .app-title{
       display:flex; gap:12px; align-items:center;
       font-weight:700; letter-spacing:.2px;
@@ -62,12 +47,13 @@
       margin-left:4px;
     }
 
-    main{
-      flex:1;
-      max-width:1100px;
-      margin:24px auto 32px;
-      padding:0 20px;
-    }
+/* Samma luft under headern som i Kanban */
+main{
+  flex:1;
+  max-width:1100px;
+  margin:0 auto 32px;   /* behåll bottenmarginalen */
+  padding: 15px;px 20px 0;  /* <-- lägg till 12px top-padding */
+}
 
     .hero{
       background:var(--card);
@@ -139,28 +125,17 @@
       display:flex; gap:12px; flex-wrap:wrap;
     }
 
-    footer{
-      border-top:1px solid var(--border);
-      padding:14px 0;
-      color:var(--muted); font-size:13px; text-align:center;
-      background:linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.85));
-    }
-    footer a{ color:var(--muted); text-decoration:none; border-bottom:1px dotted #cbd5e1; }
-    footer a:hover{ color:var(--text); }
-
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div class="bar">
-        <div class="app-title">
-          <span class="dot" aria-hidden="true"></span>
-          <span>PIF-portalen</span>
-          <span class="sub">Problemet i fokus</span>
-        </div>
-      </div>
-    </header>
+<header class="site-header">
+  <div class="container bar">
+    <div class="nav-left"><!-- tom som standard på portalen --></div>
+    <div class="brand">PIF-Portalen - Förmågan att sätta <b>problemet i fokus</b></div>
+    <div class="nav-right"><!-- ev. portal-knappar framåt --></div>
+  </div>
+</header>
 
     <main>
       <section class="hero" aria-labelledby="welcome">
@@ -196,9 +171,9 @@
       </section>
     </main>
 
-    <footer>
-      Skapad av Calle Kos
-    </footer>
+<footer class="site-footer">
+  <div class="container bar">Skapat av Calle Kos</div>
+</footer>
   </div>
 </body>
 </html>
