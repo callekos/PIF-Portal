@@ -13,5 +13,12 @@
       "name": "Klart"
     }
   ],
-  "tasks": []
+  "tasks": [
+    {
+      "id": "5mht3td9",
+      "title": "fasf",
+      "desc": "ffdsa",
+      "col": "doing"
+    }
+  ]
 }
