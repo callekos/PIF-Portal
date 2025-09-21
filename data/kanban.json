@@ -1,30 +1,17 @@
 {
   "cols": [
     {
-      "id": "todo",
-      "name": "Att göra"
-    },
-    {
       "id": "doing",
       "name": "Pågår"
+    },
+    {
+      "id": "todo",
+      "name": "Att göra"
     },
     {
       "id": "done",
       "name": "Klart"
     }
   ],
-  "tasks": [
-    {
-      "id": "5mht3td9",
-      "title": "fasf",
-      "desc": "ffdsa",
-      "col": "doing"
-    },
-    {
-      "id": "iabvtec2",
-      "title": "fdsafd",
-      "desc": "",
-      "col": "doing"
-    }
-  ]
+  "tasks": []
 }
