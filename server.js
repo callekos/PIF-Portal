@@ -9,7 +9,7 @@ const root = __dirname;
 
 // Paths
 const portalPath = path.join(root, "portal");
-const kanbanStaticPath = path.join(root, "kanban", "public");
+const kanbanStaticPath = path.join(root, "apps", "kanban", "public");
 const dataDir = path.join(root, "data");
 const dataFile = path.join(dataDir, "kanban.json");
 
