@@ -61,8 +61,15 @@ const undoBtn   = document.getElementById("undoBtn");
 const redoBtn   = document.getElementById("redoBtn"); // valfri – finns bara om du lägger till knappen
 
 // toppknappar
+const toPortalBtn = document.getElementById("toPortalBtn");
 const exportBtn = document.getElementById("exportBtn");
 const clearBtn  = document.getElementById("clearBtn");
+
+// Till portalen
+toPortalBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  window.location.assign("/");
+});
 
 // modaler (uppgift)
 const editModal  = document.getElementById("editModal");
