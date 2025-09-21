@@ -1,12 +1,12 @@
 {
   "cols": [
     {
-      "id": "doing",
-      "name": "Pågår"
-    },
-    {
       "id": "todo",
       "name": "Att göra"
+    },
+    {
+      "id": "doing",
+      "name": "Pågår"
     },
     {
       "id": "done",
