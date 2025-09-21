@@ -32,28 +32,35 @@
       flex-direction:column;
     }
 
-    .app-title{
-      display:flex; gap:12px; align-items:center;
-      font-weight:700; letter-spacing:.2px;
+    header{
+      position:sticky;
+      top:0;
+      background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+      backdrop-filter: blur(6px);
+      border-bottom:1px solid var(--border);
+      z-index:10;
     }
-    .app-title .dot{
-      width:10px; height:10px; border-radius:999px; background:var(--blue);
-      box-shadow:0 0 0 4px rgba(59,130,246,.15);
-      display:inline-block;
+    .bar{
+      max-width:1100px;
+      margin:0 auto;
+      padding:16px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
     }
-    .sub{
+    .brand{
+      margin:0 auto;
+      font-weight:600;
+      font-size:16px;
       color:var(--muted);
-      font-size:14px; font-weight:500;
-      margin-left:4px;
     }
 
-/* Samma luft under headern som i Kanban */
-main{
-  flex:1;
-  max-width:1100px;
-  margin:0 auto 32px;   /* behåll bottenmarginalen */
-  padding: 15px;px 20px 0;  /* <-- lägg till 12px top-padding */
-}
+    main{
+      flex:1;
+      max-width:1100px;
+      margin:0 auto 32px;
+      padding:12px 20px 0;
+    }
 
     .hero{
       background:var(--card);
@@ -89,53 +96,58 @@ main{
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
+      grid-template-columns: repeat(3, minmax(0,1fr));
       gap:14px;
     }
     @media (max-width:1000px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
     @media (max-width:560px){ .grid{grid-template-columns: 1fr;} }
 
-    .btn{
-      display:inline-flex;
-      align-items:center; justify-content:center;
-      gap:10px;
-      padding:14px 16px;
-      background:var(--blue);
-      color:white; text-decoration:none;
-      font-weight:600; font-size:15px;
-      border:none; border-radius:10px;
-      box-shadow: 0 6px 14px rgba(59,130,246,.25);
-      transition:transform .05s ease, background .15s ease, box-shadow .15s ease;
-      cursor:pointer;
-      user-select:none;
+    .card{
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+      gap:8px;
+      text-decoration:none;
+      color:inherit;
+      transition: transform .06s ease, box-shadow .15s ease;
     }
-    .btn:hover{ background:var(--blue-hover); transform:translateY(-1px); }
-    .btn:active{ transform:translateY(0); }
-    .btn.secondary{
-      background:#eef2ff; color:#3730a3;
-      box-shadow:none; border:1px solid #e5e7eb;
-    }
-    .btn.secondary:hover{ background:#e0e7ff; }
+    .card:hover{ transform:translateY(-1px) }
+    .card h3{ margin:0; font-size:18px; }
+    .card p{ margin:0; color:var(--muted); font-size:14px; line-height:1.5; flex:1; }
 
-    .btn .emoji{
-      font-size:18px; opacity:.95;
+    .badges{ display:flex; gap:6px; }
+    .badge{
+      font-size:12px; font-weight:600;
+      color:#fff; background:var(--blue);
+      padding:2px 6px; border-radius:6px;
     }
 
-    .tools{
-      display:flex; gap:12px; flex-wrap:wrap;
+    /* Behörighetspiller */
+    .card .perm{
+      margin-top:6px;
+      align-self:flex-start;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px;
+      font-size:12px; font-weight:600;
+      color:#374151;
+      background:#f3f4f6;
+      border:1px solid #e5e7eb;
+      border-radius:999px;
     }
-
+    .card .perm svg{ width:14px; height:14px; display:block }
   </style>
 </head>
 <body>
   <div class="wrap">
-<header class="site-header">
-  <div class="container bar">
-    <div class="nav-left"><!-- tom som standard på portalen --></div>
-    <div class="brand">PIF-Portalen - Förmågan att sätta <b>problemet i fokus</b></div>
-    <div class="nav-right"><!-- ev. portal-knappar framåt --></div>
-  </div>
-</header>
+    <header>
+      <div class="bar">
+        <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
+      </div>
+    </header>
 
     <main>
       <section class="hero" aria-labelledby="welcome">
@@ -144,36 +156,69 @@ main{
       </section>
 
       <section class="section" aria-labelledby="core">
-        <h2 id="core">Kärnflöde</h2>
+        <h2 id="core">Grundflödet</h2>
         <div class="grid">
-          <a class="btn" href="#" title="PolisenGPT (kommer senare)">
-            <span class="emoji">🧠</span> PolisenGPT
+
+          <a class="card link" href="#" title="PolisenGPT">
+            <div class="badges">
+              <span class="badge">S</span>
+              <span class="badge">A</span>
+            </div>
+            <h3>PolisenGPT</h3>
+            <p>Interagera med våra datakällor via GPT för att snabbt identifiera problem, trender och mönster – och få underlag till analys och prioritering.</p>
+            <span class="perm">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 3v6c0 5.25-3.438 9.75-7 11-3.562-1.25-7-5.75-7-11V5l7-3z"/></svg>
+              Grundanvändare
+            </span>
           </a>
-          <a class="btn" href="#" title="SARA (kommer senare)">
-            <span class="emoji">🧩</span> SARA
+
+          <a class="card link" href="#" title="Planera åtgärder">
+            <div class="badges">
+              <span class="badge">R</span>
+            </div>
+            <h3>Planera åtgärder</h3>
+            <p>Skapa åtgärder emot dina problemområden i syfte att nå en förändring av problemet.</p>
+            <span class="perm">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 3v6c0 5.25-3.438 9.75-7 11-3.562-1.25-7-5.75-7-11V5l7-3z"/></svg>
+              Ledningsfunktion
+            </span>
           </a>
-          <a class="btn" href="#" title="Planera åtgärder (kommer senare)">
-            <span class="emoji">🗺️</span> Planera åtgärder
+
+          <a class="card link" href="#" title="Uppföljning">
+            <div class="badges">
+              <span class="badge">A</span>
+            </div>
+            <h3>Uppföljning</h3>
+            <p>Följ upp om vi gjort det vi sa att vi skulle göra och om det gav effekt.</p>
+            <span class="perm">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 3v6c0 5.25-3.438 9.75-7 11-3.562-1.25-7-5.75-7-11V5l7-3z"/></svg>
+              Grundanvändare
+            </span>
           </a>
-          <a class="btn" href="#" title="Uppföljning (kommer senare)">
-            <span class="emoji">📊</span> Uppföljning
-          </a>
+
         </div>
       </section>
 
       <section class="section" aria-labelledby="tools">
         <h2 id="tools">Övriga verktyg</h2>
-        <div class="tools">
-          <a class="btn secondary" href="/kanban/">
-            <span class="emoji">🗂️</span> Öppna Kanban-tavlan
+        <div class="grid">
+          <a class="card link" href="/kanban/" title="Öppna Kanban-tavlan">
+            <h3>Mina uppgifter (Kanban)</h3>
+            <p>Din egen arbetsyta, här kan du se uppgifter som tilldelats dig eller som du själv skapat och dess status.</p>
+            <span class="perm">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 3v6c0 5.25-3.438 9.75-7 11-3.562-1.25-7-5.75-7-11V5l7-3z"/></svg>
+              Grundanvändare
+            </span>
           </a>
+          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
         </div>
       </section>
     </main>
 
-<footer class="site-footer">
-  <div class="container bar">Skapat av Calle Kos</div>
-</footer>
+    <footer class="site-footer">
+      <div class="container bar">Skapat av Calle Kos</div>
+    </footer>
   </div>
 </body>
 </html>
