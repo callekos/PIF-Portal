@@ -1,0 +1,27 @@
+{
+  "cols": [
+    { "id": "todo",  "name": "Att göra" },
+    { "id": "doing", "name": "Pågår" },
+    { "id": "done",  "name": "Klart" }
+  ],
+  "tasks": [
+    {
+      "id": "xb6maeul",
+      "title": "Grundsida",
+      "desc": "",
+      "col": "todo"
+    },
+    {
+      "id": "p5vtj7o8",
+      "title": "fdsafdas",
+      "desc": "fdsa",
+      "col": "todo"
+    },
+    {
+      "id": "twcj74tv",
+      "title": "fdsaf",
+      "desc": "fdsa",
+      "col": "todo"
+    }
+  ]
+}
