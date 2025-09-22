@@ -20,6 +20,14 @@
     </div>
     <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
     <div class="nav-right">
+      <select id="datasetSelect" title="Välj demo/normal" style="margin-right:.5rem;">
+        <option value="" selected disabled>Demo</option>
+        <option value="normal">Normal (min tavla)</option>
+        <option value="demo_utredare">Utredare</option>
+        <option value="demo_opk">OPK</option>
+        <option value="demo_lpo_chef">LPO-Chef</option>
+        <option value="demo_annan">Annan</option>
+      </select>
       <button id="undoBtn"   class="btn secondary" type="button">Ångra</button>
       <button id="redoBtn"   class="btn secondary" type="button">Gör om</button>
       <button id="exportBtn" class="btn secondary" type="button">Exportera</button>
@@ -41,7 +49,7 @@
         <textarea id="desc"></textarea>
       </div>
       <div class="field">
-        <label for="col">Ny kolumn</label>
+        <label for="col">Lägg till i kolumn</label>
         <select id="col"></select>
       </div>
       <button class="btn" type="submit">Skapa ny uppgift</button>
@@ -52,31 +60,14 @@
     <div class="panel-footer">
       <h3>Ny kolumn</h3>
       <form id="colForm" class="inline-form">
-        <input id="colName" type="text" placeholder="t.ex. Pågår" />
+        <input id="colName" type="text" placeholder="" />
         <button class="btn" type="submit">Skapa ny kolumn</button>
       </form>
-      <small>Byt namn eller ta bort kolumn via menyn (⋮) i kolumnens rubrik.</small>
     </div>
 
-    <hr />
+<hr />
 
-    <h3>Demo-databaser</h3>
-    <div class="field">
-      <label for="datasetSelect">Välj demo</label>
-      <select id="datasetSelect">
-        <option value="normal">Normal (min tavla)</option>
-        <option value="demo_utredare">Utredare</option>
-        <option value="demo_opk">OPK</option>
-        <option value="demo_lpo_chef">LPO-Chef</option>
-        <option value="demo_annan">Annan</option>
-      </select>
-    </div>
-    <div style="display:flex; gap:.5rem;">
-      <button id="applyDataset" class="btn" style="flex:1;" type="button">Visa</button>
-      <button id="exitDemo" class="btn secondary" style="flex:1;" type="button">Avsluta demo</button>
-    </div>
-    <small id="modeHint" class="hint">Läge: <strong>Normal (server)</strong></small>
-    <small class="hint">Demo sparas i sessionen och påverkar inte din vanliga tavla.</small>
+<div class="panel-footer">
   </aside>
 
   <main class="right">

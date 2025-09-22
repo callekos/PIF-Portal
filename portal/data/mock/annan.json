@@ -1,28 +1,16 @@
 {
   "cols": [
-    {
-      "id": "todo",
-      "name": "Att göra"
-    },
-    {
-      "id": "doing",
-      "name": "Pågår"
-    },
-    {
-      "id": "done",
-      "name": "Klart"
-    },
-    {
-      "id": "5g17vsdk",
-      "name": "fsad"
-    }
+    { "id": "todo",  "name": "Att göra" },
+    { "id": "doing", "name": "Pågår" },
+    { "id": "done",  "name": "Klart" }
   ],
   "tasks": [
-    {
-      "id": "xb6maeul",
-      "title": "Annan",
-      "desc": "",
-      "col": "todo"
-    }
+    { "id": "a1", "title": "Idégenerering", "desc": "Samla förbättringsförslag från alla användare.", "col": "todo" },
+    { "id": "a2", "title": "Buggrapporter", "desc": "Triagera inkomna fel och prioritera.", "col": "doing" },
+    { "id": "a3", "title": "Snabbguide", "desc": "Skapa 1-sides PDF för nya användare.", "col": "todo" },
+    { "id": "a4", "title": "Testkör demo", "desc": "Gå igenom samtliga flöden och notera hinder.", "col": "doing" },
+    { "id": "a5", "title": "Feedbackrunda", "desc": "Skicka ut enkät efter test.", "col": "todo" },
+    { "id": "a6", "title": "Städa data", "desc": "Ta bort dubbletter i demo-miljö.", "col": "done" },
+    { "id": "a7", "title": "Planera nästa version", "desc": "Definiera mål, scope och tidslinje.", "col": "todo" }
   ]
 }

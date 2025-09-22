@@ -5,23 +5,15 @@
     { "id": "done",  "name": "Klart" }
   ],
   "tasks": [
-    {
-      "id": "xb6maeul",
-      "title": "Grundsida",
-      "desc": "",
-      "col": "todo"
-    },
-    {
-      "id": "p5vtj7o8",
-      "title": "fdsafdas",
-      "desc": "fdsa",
-      "col": "todo"
-    },
-    {
-      "id": "twcj74tv",
-      "title": "fdsaf",
-      "desc": "fdsa",
-      "col": "todo"
-    }
+    { "id": "l1", "title": "Mål & prioriteringar Q3", "desc": "Besluta målbild och nyckeltal. Kommunicera på APT.", "col": "doing" },
+    { "id": "l2", "title": "Uppföljning ärendebalans", "desc": "Lägesgenomgång med gruppchefer. Identifiera flaskhalsar.", "col": "todo" },
+    { "id": "l3", "title": "KomSam-möte", "desc": "Möte med kommunen om trygghet i centrum.", "col": "todo" },
+    { "id": "l4", "title": "Kompetensplanering", "desc": "Utbildningsbehov FU-ledare/utredare. Fördelning platser.", "col": "todo" },
+    { "id": "l5", "title": "Rekrytering", "desc": "Plan för svårrekryterade funktioner. Åtgärdsförslag.", "col": "doing" },
+    { "id": "l6", "title": "Skyddsronder", "desc": "Genomförda i alla grupper? Sammanställ åtgärdslista.", "col": "done" },
+    { "id": "l7", "title": "Teknikstöd", "desc": "Prioritera införande av stödverktyg. Beslut om pilot.", "col": "todo" },
+    { "id": "l8", "title": "Kommunikation internt", "desc": "Veckobrev: fokus, framsteg och lärdomar.", "col": "todo" },
+    { "id": "l9", "title": "Budgetuppföljning", "desc": "Övertid, utbildning, fordon. Avvikelseanalys.", "col": "doing" },
+    { "id": "l10", "title": "Dialog med regionledning", "desc": "Rapportera effekter och behov.", "col": "todo" }
   ]
 }

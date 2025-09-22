@@ -194,6 +194,22 @@ async function setMode(newMode, datasetId=null){
 }
 
 // ===== Lägesknappar =====
+
+// Direktaktivera läge när något väljs i dropdownen
+datasetSelect?.addEventListener("change", async (e) => {
+  const raw = e.target.value;                // "" | "normal" | "demo_*"
+  const val = normalizeDatasetId(raw);
+  if (val === "normal") await setMode("normal");
+  else if (val)         await setMode("demo", val);
+});
+
+applyDatasetBtn?.addEventListener("click", async () => {
+  const raw = datasetSelect.value;               // "normal" | "demo_*"
+  const val = normalizeDatasetId(raw);
+  if (val === "normal") await setMode("normal");
+  else                  await setMode("demo", val);
+});
+
 applyDatasetBtn?.addEventListener("click", async () => {
   const raw = datasetSelect.value;               // "normal" | "demo_*"
   const val = normalizeDatasetId(raw);
