@@ -131,15 +131,15 @@ function persist(){
 }
 
 // ==================== DOM ====================
-const board     = document.getElementById("board");
-const colSelect = document.getElementById("col");
-const taskForm  = document.getElementById("taskForm");
-const colForm   = document.getElementById("colForm");
-const undoBtn   = document.getElementById("undoBtn");
-const redoBtn   = document.getElementById("redoBtn");
+const board       = document.getElementById("board");
+const colSelect   = document.getElementById("col");
+const taskForm    = document.getElementById("taskForm");
+const colForm     = document.getElementById("colForm");
+const undoBtn     = document.getElementById("undoBtn");
+const redoBtn     = document.getElementById("redoBtn");
 const toPortalBtn = document.getElementById("toPortalBtn");
-const exportBtn = document.getElementById("exportBtn");
-const clearBtn  = document.getElementById("clearBtn");
+const exportBtn   = document.getElementById("exportBtn");
+const clearBtn    = document.getElementById("clearBtn");
 
 // modaler
 const editModal  = document.getElementById("editModal");
@@ -195,19 +195,12 @@ async function setMode(newMode, datasetId=null){
 
 // ===== Lägesknappar =====
 
-// Direktaktivera läge när något väljs i dropdownen
+// Direktaktivera läge när något väljs i dropdownen (ersätter behovet av "Visa/Avsluta demo")
 datasetSelect?.addEventListener("change", async (e) => {
   const raw = e.target.value;                // "" | "normal" | "demo_*"
   const val = normalizeDatasetId(raw);
   if (val === "normal") await setMode("normal");
   else if (val)         await setMode("demo", val);
-});
-
-applyDatasetBtn?.addEventListener("click", async () => {
-  const raw = datasetSelect.value;               // "normal" | "demo_*"
-  const val = normalizeDatasetId(raw);
-  if (val === "normal") await setMode("normal");
-  else                  await setMode("demo", val);
 });
 
 applyDatasetBtn?.addEventListener("click", async () => {
@@ -302,13 +295,35 @@ function taskCard(task,col){
   const meta=document.createElement("div"); meta.className="meta";
   const tag=document.createElement("span"); tag.className="tag"; tag.textContent=col.name;
 
-  const acts=document.createElement("div"); acts.className="actions";
-  const edit=document.createElement("button"); edit.className="btn secondary"; edit.textContent="Redigera"; edit.onclick=()=>openTaskModal(task.id);
-  const del=document.createElement("button"); del.className="btn danger"; del.textContent="Ta bort"; del.onclick=()=>openDeleteModal(task.id);
-  acts.appendChild(edit); acts.appendChild(del);
+  // ====== NYTT: liten toppbar med trepunkter (redigera) + kryss (ta bort) ======
+  const topbar = document.createElement("div");
+  topbar.className = "card-topbar";
 
-  meta.appendChild(tag); meta.appendChild(acts);
-  el.appendChild(title); el.appendChild(desc); el.appendChild(meta);
+  const menuBtn = document.createElement("button");
+  menuBtn.className = "drag-handle";
+  menuBtn.textContent = "⋮";
+  menuBtn.title = "Redigera";
+  menuBtn.onclick = (ev)=>{ ev.stopPropagation(); openTaskModal(task.id); };
+
+  const delBtn = document.createElement("button");
+  delBtn.className = "close-btn";
+  delBtn.textContent = "×";
+  delBtn.title = "Ta bort";
+  delBtn.onclick = (ev)=>{ ev.stopPropagation(); openDeleteModal(task.id); };
+
+  topbar.appendChild(menuBtn);
+  topbar.appendChild(delBtn);
+  // ====== SLUT NYTT ======
+
+  const acts=document.createElement("div"); acts.className="actions"; // lämnas orört för layoutens skull men används inte
+  // (gamla stora knappar borttagna)
+
+  meta.appendChild(tag);
+
+  el.appendChild(topbar);  // lägg överst
+  el.appendChild(title);
+  el.appendChild(desc);
+  el.appendChild(meta);
   return el;
 }
 
