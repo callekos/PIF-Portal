@@ -1,16 +1,100 @@
 {
   "cols": [
-    { "id": "todo",  "name": "Att göra" },
-    { "id": "doing", "name": "Pågår" },
-    { "id": "done",  "name": "Klart" }
+    { "id": "uppstart", "name": "Uppstarts- / jaktfas" },
+    { "id": "arbete", "name": "Arbetsfas" },
+    { "id": "avslut", "name": "Avslutningsfas" },
+    { "id": "vantande", "name": "Väntande" }
   ],
   "tasks": [
-    { "id": "a1", "title": "Idégenerering", "desc": "Samla förbättringsförslag från alla användare.", "col": "todo" },
-    { "id": "a2", "title": "Buggrapporter", "desc": "Triagera inkomna fel och prioritera.", "col": "doing" },
-    { "id": "a3", "title": "Snabbguide", "desc": "Skapa 1-sides PDF för nya användare.", "col": "todo" },
-    { "id": "a4", "title": "Testkör demo", "desc": "Gå igenom samtliga flöden och notera hinder.", "col": "doing" },
-    { "id": "a5", "title": "Feedbackrunda", "desc": "Skicka ut enkät efter test.", "col": "todo" },
-    { "id": "a6", "title": "Städa data", "desc": "Ta bort dubbletter i demo-miljö.", "col": "done" },
-    { "id": "a7", "title": "Planera nästa version", "desc": "Definiera mål, scope och tidslinje.", "col": "todo" }
+    {
+      "id": "t1",
+      "title": "ALFA",
+      "desc": "Ärendenummer: K123456-25\nBrottsrubricering: Skadegörelse\nKort beskrivning: Flera bilar har fått rutorna krossade på en parkering i centrala Södertälje.",
+      "col": "uppstart"
+    },
+    {
+      "id": "t2",
+      "title": "BRAVO",
+      "desc": "Ärendenummer: K98765-25\nBrottsrubricering: Misshandel\nKort beskrivning: En man blev slagen utanför en restaurang i Ronna.",
+      "col": "uppstart"
+    },
+    {
+      "id": "t3",
+      "title": "CHARLIE",
+      "desc": "Ärendenummer: K345678-25\nBrottsrubricering: Stöld\nKort beskrivning: Mobiltelefon tillgripen på café i Södertälje centrum.",
+      "col": "arbete"
+    },
+    {
+      "id": "t4",
+      "title": "DELTA",
+      "desc": "Ärendenummer: K5678-25\nBrottsrubricering: Bedrägeri\nKort beskrivning: Person lurad på pengar via nätbedrägeri med falska annonser.",
+      "col": "arbete"
+    },
+    {
+      "id": "t5",
+      "title": "ECHO",
+      "desc": "Ärendenummer: K765432-25\nBrottsrubricering: Mordbrand\nKort beskrivning: Brand anlagd i en källare i Geneta, misstänkt spridningsrisk.",
+      "col": "arbete"
+    },
+    {
+      "id": "t6",
+      "title": "FOXTROT",
+      "desc": "Ärendenummer: K246810-25\nBrottsrubricering: Narkotikabrott\nKort beskrivning: Gripande av två personer med misstänkt narkotika vid järnvägsstationen.",
+      "col": "arbete"
+    },
+    {
+      "id": "t7",
+      "title": "GOLF",
+      "desc": "Ärendenummer: K1357911-25\nBrottsrubricering: Rån\nKort beskrivning: Person rånad på mobil och plånbok vid Mariekällskolan.",
+      "col": "arbete"
+    },
+    {
+      "id": "t8",
+      "title": "HOTEL",
+      "desc": "Ärendenummer: K543210-25\nBrottsrubricering: Ofredande\nKort beskrivning: Hotfulla sms skickade till målsägande under längre tid.",
+      "col": "avslut"
+    },
+    {
+      "id": "t9",
+      "title": "INDIA",
+      "desc": "Ärendenummer: K112233-25\nBrottsrubricering: Grov misshandel\nKort beskrivning: En person nedslagen med tillhygge i Hovsjö.",
+      "col": "avslut"
+    },
+    {
+      "id": "t10",
+      "title": "JULIET",
+      "desc": "Ärendenummer: K445566-25\nBrottsrubricering: Olaga hot\nKort beskrivning: Grannkonflikt som eskalerat, hot med kniv i tvättstuga.",
+      "col": "avslut"
+    },
+    {
+      "id": "t11",
+      "title": "KILO",
+      "desc": "Ärendenummer: K778899-25\nBrottsrubricering: Mord\nKort beskrivning: Person funnen avliden i bostad, misstänkt mord i Lina.",
+      "col": "avslut"
+    },
+    {
+      "id": "t12",
+      "title": "LIMA",
+      "desc": "Ärendenummer: K2468013-25\nBrottsrubricering: Trafikbrott\nKort beskrivning: Förare stoppad för rattfylleri, blodprov inväntas.",
+      "col": "vantande"
+    },
+    {
+      "id": "t13",
+      "title": "MIKE",
+      "desc": "Ärendenummer: K86420-25\nBrottsrubricering: Stöld genom inbrott\nKort beskrivning: Inbrott i villa i Enhörna, teknisk undersökning väntar.",
+      "col": "vantande"
+    },
+    {
+      "id": "t14",
+      "title": "NOVEMBER",
+      "desc": "Ärendenummer: K975310-25\nBrottsrubricering: Penningtvätt\nKort beskrivning: Misstänkta transaktioner kopplade till kriminellt nätverk.",
+      "col": "vantande"
+    },
+    {
+      "id": "t15",
+      "title": "OSCAR",
+      "desc": "Ärendenummer: K531975-25\nBrottsrubricering: Våldtäkt\nKort beskrivning: Anmälan om överfallsvåldtäkt i centrala Södertälje, rättsintyg inväntas.",
+      "col": "vantande"
+    }
   ]
 }
