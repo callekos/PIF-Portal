@@ -1,28 +1,21 @@
 {
   "cols": [
-    {
-      "id": "todo",
-      "name": "Att göra"
-    },
-    {
-      "id": "doing",
-      "name": "Pågår"
-    },
-    {
-      "id": "done",
-      "name": "Klart"
-    },
-    {
-      "id": "5g17vsdk",
-      "name": "fsad"
-    }
+    { "id": "todo",  "name": "Att göra" },
+    { "id": "doing", "name": "Pågår" },
+    { "id": "done",  "name": "Klart" }
   ],
   "tasks": [
-    {
-      "id": "xb6maeul",
-      "title": "Utredare",
-      "desc": "",
-      "col": "todo"
-    }
+    { "id": "u1", "title": "Förhör målsägande", "desc": "Boka och hålla inledande förhör. Kontrollera målsägandebiträde.", "col": "doing" },
+    { "id": "u2", "title": "Begär kamerabilder", "desc": "Kontakta butiker på X-gatan 10–24. Be om råmaterial i originalformat.", "col": "todo" },
+    { "id": "u3", "title": "Teknisk spårsäkring", "desc": "DNA/latent, mobiltelefon i beslag – kedja av bevisning.", "col": "todo" },
+    { "id": "u4", "title": "Förhör misstänkt", "desc": "Kallas via försvarare. Kontrollera tolkbehov.", "col": "todo" },
+    { "id": "u5", "title": "Hämtning av telefondata", "desc": "Samtycke finns, gör selekterad kopia. Dokumentera metod.", "col": "doing" },
+    { "id": "u6", "title": "Målsägandeinfo", "desc": "Skicka statusbrev och kontaktuppgifter.", "col": "done" },
+    { "id": "u7", "title": "Granska larm & anrop", "desc": "Ta ut RLC-loggar kring tidpunkten.", "col": "todo" },
+    { "id": "u8", "title": "Kartlägg vittnen", "desc": "Dörrknackning trapphus A–C. Lägg upp mall för vittnesförhör.", "col": "doing" },
+    { "id": "u9", "title": "Sakframställan till åklagare", "desc": "Kort lägesbeskrivning + nästa steg, senast fredag.", "col": "todo" },
+    { "id": "u10", "title": "Bilduppradning", "desc": "Förbered material enligt riktlinjer. Boka rum.", "col": "todo" },
+    { "id": "u11", "title": "Ärendeadministration", "desc": "Koda brott, uppdatera diarienoter, lägg in beslut.", "col": "done" },
+    { "id": "u12", "title": "Plan för åtgärder v. nästa", "desc": "Prioritera åtgärder efter ny info från förhör.", "col": "todo" }
   ]
 }

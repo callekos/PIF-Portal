@@ -1,28 +1,19 @@
 {
   "cols": [
-    {
-      "id": "todo",
-      "name": "Att göra"
-    },
-    {
-      "id": "doing",
-      "name": "Pågår"
-    },
-    {
-      "id": "done",
-      "name": "Klart"
-    },
-    {
-      "id": "5g17vsdk",
-      "name": "fsad"
-    }
+    { "id": "todo",  "name": "Att göra" },
+    { "id": "doing", "name": "Pågår" },
+    { "id": "done",  "name": "Klart" }
   ],
   "tasks": [
-    {
-      "id": "xb6maeul",
-      "title": "OPK",
-      "desc": "",
-      "col": "todo"
-    }
+    { "id": "o1", "title": "Uppdatera lägesbild", "desc": "Samla veckans spaningar, statistik och händelser.", "col": "doing" },
+    { "id": "o2", "title": "Veckans inriktning", "desc": "Formulera mål & mätpunkter. Förankra med LPO-chef.", "col": "todo" },
+    { "id": "o3", "title": "Resursplan fredag kväll", "desc": "Matcha bemanning mot hotspots. Samverka med ordningssektionen.", "col": "todo" },
+    { "id": "o4", "title": "Insatsplan – centrum", "desc": "Checklista, roller, samband, RAPS-kod.", "col": "doing" },
+    { "id": "o5", "title": "Avvikelsehantering", "desc": "Följ upp utebliven rapportering från patrull X.", "col": "todo" },
+    { "id": "o6", "title": "Efteranalys förra helgen", "desc": "Vad fungerade, vad förbättras, nästa åtgärd.", "col": "done" },
+    { "id": "o7", "title": "Kontakt kommun", "desc": "Skicka samverkansnotis om planerad riktad aktivitet.", "col": "todo" },
+    { "id": "o8", "title": "Briefingunderlag", "desc": "Ta fram 5-minuters PPT + karta.", "col": "doing" },
+    { "id": "o9", "title": "Uppföljning mätetal", "desc": "Genomströmningstid, antal ingripanden, SLF-andel.", "col": "todo" },
+    { "id": "o10", "title": "Handlingsplan A-ärenden", "desc": "Fördela ut redovisningsmål per grupp.", "col": "todo" }
   ]
 }
