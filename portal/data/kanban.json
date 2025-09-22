@@ -25,6 +25,24 @@
       "title": "DEMO",
       "desc": "Den visuellt produkten behöver demas så att alla är med på hur allt hänger ihop.",
       "col": "todo"
+    },
+    {
+      "id": "e39p9cw8",
+      "title": "Inventera vilka delar som ska ingå i Baspaketet",
+      "desc": "Informationsförsörjningen, PGU, POP/SARA, UND... fler?",
+      "col": "doing"
+    },
+    {
+      "id": "f34r1g3x",
+      "title": "Workshop",
+      "desc": "Arrangera en WS med relevanta personer för att nå samsyn kring Baspaketet",
+      "col": "todo"
+    },
+    {
+      "id": "1k0oorr9",
+      "title": "Lära mig bygga IT-system",
+      "desc": "För att kunna göra bra visuella produkter.",
+      "col": "done"
     }
   ]
 }

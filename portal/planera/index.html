@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <link rel="stylesheet" href="../../assets/css/common.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GPT – PIF-portalen</title>
+  <style>
+    html,body { height:100%; margin:0; }
+    .wrap { min-height:100%; display:flex; flex-direction:column; }
+    main { flex:1; max-width:1100px; margin:0 auto; padding:20px; }
+
+    /* --- Placera knappen exakt som på Kanban --- */
+    .site-header .bar { position: relative; }
+    .site-header .nav-left{
+      position:absolute;
+      left:16px;                  /* samma vänsterkant som Kanban */
+      top:50%;
+      transform:translateY(-50%);
+      display:flex; align-items:center; gap:8px;
+    }
+
+    /* --- IDENTISKA knappregler som i kanban/style.css --- */
+    .btn{
+      display:inline-block;
+      padding:.45rem .8rem;
+      border:none;                     /* viktigt: ingen kantlinje */
+      border-radius:8px;               /* samma radie */
+      cursor:pointer;
+      font:inherit;
+      background:#2563eb;              /* primär (behövs ej för secondary, men ofarligt) */
+      color:#fff;
+      transition:background .15s ease;
+    }
+    .btn:hover{ background:#1d4ed8; }
+    .btn.secondary{
+      background:#e5e7eb;
+      color:#111827;                   /* var(--text) i kanban */
+    }
+    .btn.secondary:hover{ background:#d1d5db; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER: fluid bredd som Kanban; brand centreras via common.css -->
+    <header class="site-header">
+      <div class="container-fluid bar">
+        <div class="nav-left">
+          <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
+        </div>
+        <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
+        <div class="nav-right"></div>
+      </div>
+    </header>
+
+    <!-- TOM MITTDEL -->
+    <main>
+      <!-- bygg vidare här -->
+    </main>
+
+    <!-- FOOTER: enligt din spec -->
+    <footer class="site-footer">
+      <div class="container bar">Skapat av Calle Kos</div>
+    </footer>
+  </div>
+
+  <script src="../../app.js"></script>
+</body>
+</html>

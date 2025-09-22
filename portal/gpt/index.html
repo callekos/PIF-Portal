@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <link rel="stylesheet" href="../../assets/css/common.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PolisenGPT – PIF-portalen</title>
+  <style>
+    :root{
+      --header-h: 76px;   /* ungefärlig headerhöjd */
+      --footer-h: 44px;   /* ungefärlig footerhöjd */
+      --sidebar-w: 280px;
+    }
+
+    /* === Baslayout: grå bakgrund, ingen scroll på sidan === */
+    html, body {
+      height: 100vh;
+      margin: 0;
+      background: #f8fafc;
+      overflow: hidden; /* <— ingen scroll på hela sidan */
+    }
+
+    .wrap {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main { flex: 1 0 auto; }
+
+    /* Footern: fast i botten */
+    footer.site-footer {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 5;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      height: var(--footer-h);
+    }
+
+    /* Vänsterknappen – endast position; utseende kommer från dina knapplistilar */
+    .site-header .bar { position: relative; }
+    .site-header .nav-left{
+      position:absolute; left:16px; top:50%; transform:translateY(-50%);
+      display:flex; align-items:center; gap:8px;
+    }
+
+    /* Kanban-knappstil (om den inte redan finns globalt) */
+    .btn { display:inline-block; padding:.45rem .8rem; border:none; border-radius:8px;
+           cursor:pointer; font:inherit; background:#2563eb; color:#fff; transition:background .15s ease; }
+    .btn:hover { background:#1d4ed8; }
+    .btn.secondary { background:#e5e7eb; color:#111827; }
+    .btn.secondary:hover { background:#d1d5db; }
+
+    /* === GPT-layout ===
+       Fyll exakt höjden under headern (footern ligger ovanpå och sidan skrollar inte) */
+    .gpt-shell{
+      height: calc(100vh - var(--header-h));
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr var(--sidebar-w);
+      gap: 0;
+      /* ingen scroll någonstans i skalet */
+      overflow: hidden;
+    }
+
+    /* Sidebars – samma look som Kanban */
+    .gpt-sidebar{
+      background:#fff;
+      border-right:1px solid #e5e7eb;
+      padding:1rem;
+      height:100%;
+      /* ingen scroll i sidomenyerna heller */
+      overflow: hidden;
+    }
+    .gpt-sidebar.right{ border-right:none; border-left:1px solid #e5e7eb; }
+
+    .gpt-section{ margin-bottom:16px; }
+    .gpt-section h3{ margin:0 0 10px 0; font-size:14px; color:#334155; }
+    .gpt-list{ display:flex; flex-direction:column; gap:8px; }
+    .gpt-item{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px;
+      background:#f8fafc; cursor:pointer;
+      transition: transform .06s ease, background .12s ease, border-color .12s ease;
+    }
+    .gpt-item:hover{ background:#f1f5f9; border-color:#dce1e8; transform:translateY(-1px); }
+    .gpt-item .dot{ width:8px; height:8px; border-radius:999px; background:#94a3b8; }
+    .gpt-item .txt{ font-size:14px; color:#0f172a; }
+
+    /* Mittytan – centrerar GPT-kortet, ingen scroll */
+    .gpt-center{
+      height:100%;
+      display:flex; align-items:center; justify-content:center;
+      padding:16px;
+      overflow: hidden; /* <— ingen intern scroll */
+    }
+    .gpt-hero{
+      background:#fff; border:1px solid #e5e7eb; border-radius:14px;
+      box-shadow:0 8px 20px rgba(15,23,42,.06);
+      padding:30px 28px; text-align:center;
+      max-width:980px; width:100%;
+    }
+    .gpt-hero h1{ margin:2px 0 16px 0; font-size:32px; color:#0f172a; }
+
+    .gpt-search{
+      display:flex; align-items:center; gap:10px;
+      background:#f8fafc; border:1px solid #e5e7eb; border-radius:999px;
+      padding:12px 14px; max-width:800px; margin:0 auto;
+    }
+    .gpt-search .icon{ width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; }
+    .gpt-search input{ flex:1; border:none; outline:none; background:transparent; font-size:16px; }
+    .gpt-send{ border:none; background:#2563eb; color:#fff; border-radius:999px; padding:9px 16px; font-weight:600; cursor:pointer; }
+    .gpt-send:hover{ background:#1d4ed8; }
+
+    .gpt-suggests{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:12px; }
+    .gpt-suggest{ font-size:13px; color:#0f172a; background:#f1f5f9; border:1px solid #e5e7eb;
+                  border-radius:999px; padding:6px 10px; cursor:pointer; }
+    .gpt-suggest:hover{ background:#e7eef6; }
+
+    /* Responsiv fallback (om du vill kunna skrolla på små skärmar, ta bort overflow:hidden ovan) */
+    @media (max-width: 1180px){
+      .gpt-shell{ grid-template-columns: 1fr; }
+      .gpt-sidebar{ border-right:none; border-left:none; border-bottom:1px solid #e5e7eb; }
+      .gpt-sidebar.right{ border-bottom:1px solid #e5e7eb; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER (orörd förutom placerad knapp) -->
+  <header class="site-header">
+    <div class="container-fluid bar">
+      <div class="nav-left">
+        <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
+      </div>
+      <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
+      <div class="nav-right"></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <main>
+      <div class="gpt-shell">
+        <!-- SIDOMENY VÄNSTER -->
+        <aside class="gpt-sidebar left" aria-label="Sidomeny – vänster">
+          <div class="gpt-section">
+            <h3>Redskap (mock)</h3>
+            <div class="gpt-list">
+              <div class="gpt-item"><span class="dot"></span><span class="txt">Lägesbild-generator</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">SLF-snabbförslag</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">SARA-assistent</span></div>
+            </div>
+          </div>
+          <div class="gpt-section">
+            <h3>Projekt (mock)</h3>
+            <div class="gpt-list">
+              <div class="gpt-item"><span class="dot"></span><span class="txt">Baspaket LPO</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">PGU → SLG</span></div>
+            </div>
+          </div>
+          <div class="gpt-section">
+            <h3>Tidigare frågor (mock)</h3>
+            <div class="gpt-list">
+              <div class="gpt-item"><span class="dot"></span><span class="txt">SARA – akronym</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">PL 13 – kort förklaring</span></div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- MITTEN – GPT -->
+        <section class="gpt-center" aria-label="PolisenGPT">
+          <div class="gpt-hero">
+            <h1>Vad har du på hjärtat idag?</h1>
+            <div class="gpt-search">
+              <!-- Gnista -->
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2c.5 3-1 4-3 6s-2.5 5 .5 7c2.5 2 6 1 7.5-1.5S19 8 17 6s-3-3-3-4z"/>
+                  <path d="M8 16s-1 3-3 4m10-2s1 2 3 3"/>
+                </svg>
+              </span>
+              <input id="heroInput" type="text" placeholder="Fråga vad som helst" />
+              <!-- Mikrofon -->
+              <button type="button" id="voiceBtn" title="Röstinmatning" style="border:none;background:transparent;padding:4px;cursor:pointer;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <path d="M12 19v3"/>
+                </svg>
+              </button>
+              <button id="heroSend" class="gpt-send" type="button">Skicka</button>
+            </div>
+            <div class="gpt-suggests">
+              <span class="gpt-suggest">Daglig lägesbild</span>
+              <span class="gpt-suggest">PGU 10-min</span>
+              <span class="gpt-suggest">Mail till ÅM</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIDOMENY HÖGER -->
+        <aside class="gpt-sidebar right" aria-label="Sidomeny – höger">
+          <div class="gpt-section">
+            <h3>Redskap (mock)</h3>
+            <div class="gpt-list">
+              <div class="gpt-item"><span class="dot"></span><span class="txt">Lägesbild-generator</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">SLF-snabbförslag</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">SARA-assistent</span></div>
+            </div>
+          </div>
+          <div class="gpt-section">
+            <h3>Projekt (mock)</h3>
+            <div class="gpt-list">
+              <div class="gpt-item"><span class="dot"></span><span class="txt">Baspaket LPO</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">PGU → SLG</span></div>
+            </div>
+          </div>
+          <div class="gpt-section">
+            <h3>Tidigare frågor (mock)</h3>
+            <div class="gpt-list">
+              <div class="gpt-item"><span class="dot"></span><span class="txt">SARA – akronym</span></div>
+              <div class="gpt-item"><span class="dot"></span><span class="txt">PL 13 – kort förklaring</span></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- FOOTER (oförändrad, texten centreras av common.css) -->
+  <footer class="site-footer">
+    <div class="container bar">Skapat av Calle Kos</div>
+  </footer>
+
+  <!-- Global script för portalknappen -->
+  <script src="../../app.js"></script>
+  <script>
+    // Navigera tillbaka till startsidan (justera om din bas-URL skiljer sig)
+    document.getElementById('toPortalBtn')?.addEventListener('click', () => {
+      window.location.href = '/';
+    });
+
+    // Mock (chat kommer senare)
+    document.getElementById('heroSend')?.addEventListener('click', () => {
+      const v = document.getElementById('heroInput').value.trim();
+      if(v) console.log('Mock submit:', v);
+    });
+    document.getElementById('voiceBtn')?.addEventListener('click', () => {
+      alert('Röstinmatning (mock) – kopplas till STT senare.');
+    });
+  </script>
+</body>
+</html>
