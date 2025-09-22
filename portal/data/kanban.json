@@ -1,0 +1,52 @@
+{
+  "cols": [
+    {
+      "id": "todo",
+      "name": "Att göra"
+    },
+    {
+      "id": "doing",
+      "name": "Pågår"
+    },
+    {
+      "id": "done",
+      "name": "Klart"
+    },
+    {
+      "id": "1gc4j13g",
+      "name": "fdsa"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "vnxf8t5d",
+      "title": "fdsaf",
+      "desc": "sdaf",
+      "col": "todo"
+    },
+    {
+      "id": "g0ahvdfc",
+      "title": "sTANDARD",
+      "desc": "",
+      "col": "todo"
+    },
+    {
+      "id": "ox2b2nms",
+      "title": "gfds",
+      "desc": "",
+      "col": "todo"
+    },
+    {
+      "id": "0rxgdgxg",
+      "title": "gfds",
+      "desc": "",
+      "col": "todo"
+    },
+    {
+      "id": "zmcyghp0",
+      "title": "fdsaf",
+      "desc": "",
+      "col": "todo"
+    }
+  ]
+}

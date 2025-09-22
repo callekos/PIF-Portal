@@ -7,15 +7,10 @@
 
   <link rel="stylesheet" href="/assets/css/common.css">
   <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="style.css" />
-<style>
-  /* Visa radbryt i både titel och beskrivning på korten */
-  .card .desc,
-  .card .title {
-    white-space: pre-line;   /* \n visas som nya rader */
-    word-wrap: break-word;   /* bryt långa ord/URL:er snyggt */
-  }
-</style>
+  <style>
+    .card .desc, .card .title { white-space: pre-line; word-wrap: break-word; }
+    .hint { font-size: 12px; color:#6b7280; margin-top:8px; display:block; }
+  </style>
 </head>
 <body>
 <header class="site-header">
@@ -23,111 +18,100 @@
     <div class="nav-left">
       <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
     </div>
-
     <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
-
     <div class="nav-right">
-      <button id="undoBtn"   class="btn secondary">Ångra</button>
-      <button id="redoBtn"   class="btn secondary">Gör om</button>
-      <button id="exportBtn" class="btn secondary">Exportera</button>
-      <button id="clearBtn"  class="btn danger">Rensa</button>
+      <button id="undoBtn"   class="btn secondary" type="button">Ångra</button>
+      <button id="redoBtn"   class="btn secondary" type="button">Gör om</button>
+      <button id="exportBtn" class="btn secondary" type="button">Exportera</button>
+      <button id="clearBtn"  class="btn danger"    type="button">Rensa</button>
     </div>
   </div>
 </header>
 
-  <div class="wrap">
-    <!-- Vänsterpanel -->
-    <aside class="left">
-      <form id="taskForm">
-        <h3>Ny uppgift</h3>
-        <div class="field">
-          <label for="title">Titel</label>
-          <input id="title" type="text" />
-        </div>
-        <div class="field">
-          <label for="desc">Beskrivning (valfritt)</label>
-          <textarea id="desc"></textarea>
-        </div>
-        <div class="field">
-          <label for="col">Ny kolumn</label>
-          <select id="col"></select>
-        </div>
-        <button class="btn" type="submit">Skapa ny uppgift</button>
+<div class="wrap">
+  <aside class="left">
+    <form id="taskForm">
+      <h3>Ny uppgift</h3>
+      <div class="field">
+        <label for="title">Titel</label>
+        <input id="title" type="text" />
+      </div>
+      <div class="field">
+        <label for="desc">Beskrivning (valfritt)</label>
+        <textarea id="desc"></textarea>
+      </div>
+      <div class="field">
+        <label for="col">Ny kolumn</label>
+        <select id="col"></select>
+      </div>
+      <button class="btn" type="submit">Skapa ny uppgift</button>
+    </form>
+
+    <hr />
+
+    <div class="panel-footer">
+      <h3>Ny kolumn</h3>
+      <form id="colForm" class="inline-form">
+        <input id="colName" type="text" placeholder="t.ex. Pågår" />
+        <button class="btn" type="submit">Skapa ny kolumn</button>
       </form>
-
-      <hr />
-
-      <div class="panel-footer">
-        <h3>Ny kolumn</h3>
-        <form id="colForm" class="inline-form">
-          <input id="colName" type="text" />
-          <button class="btn" type="submit">Skapa ny kolumn</button>
-        </form>
-        <small>Byt namn eller ta bort kolumn via menyn (⋮) i kolumnens rubrik.<br/>Data sparas i <code>data/kanban.json</code> via din lokala server.</small>
-      </div>
-    </aside>
-
-    <!-- Huvudområde -->
-    <main class="right">
-      <div id="board"></div>
-    </main>
-  </div>
-
-  <!-- Modal: redigera uppgift -->
-  <div id="editModal" class="modal" hidden>
-    <div class="modal__content">
-      <h3>Redigera uppgift</h3>
-      <div class="field">
-        <label for="editTitle">Titel</label>
-        <input id="editTitle" type="text" />
-      </div>
-      <div class="field">
-        <label for="editDesc">Beskrivning</label>
-        <textarea id="editDesc"></textarea>
-      </div>
-      <div class="modal__actions">
-        <button id="cancelEdit" class="btn secondary">Avbryt</button>
-        <button id="saveEdit" class="btn">Spara</button>
-      </div>
+      <small>Byt namn eller ta bort kolumn via menyn (⋮) i kolumnens rubrik.</small>
     </div>
-  </div>
 
-  <!-- Modal: redigera kolumn -->
-  <div id="colModal" class="modal" hidden>
-    <div class="modal__content">
-      <h3>Redigera kolumn</h3>
-      <div class="field">
-        <label for="colEditName">Namn</label>
-        <input id="colEditName" type="text" />
-      </div>
-      <!-- visas endast när man tryckt “Ta bort” och kolumnen innehåller uppgifter -->
-      <div id="colMoveWrap" class="field" hidden>
-        <label for="colMoveSelect">Flytta befintliga uppgifter till</label>
-        <select id="colMoveSelect"></select>
-      </div>
-      <div class="modal__actions">
-        <button id="colCancel" class="btn secondary">Avbryt</button>
-        <button id="colDelete" class="btn danger">Ta bort</button>
-        <button id="colSave" class="btn">Spara</button>
-      </div>
+    <hr />
+
+    <h3>Demo-databaser</h3>
+    <div class="field">
+      <label for="datasetSelect">Välj demo</label>
+      <select id="datasetSelect">
+        <option value="normal">Normal (min tavla)</option>
+        <option value="demo_utredare">Utredare</option>
+        <option value="demo_opk">OPK</option>
+        <option value="demo_lpo_chef">LPO-Chef</option>
+        <option value="demo_annan">Annan</option>
+      </select>
     </div>
-  </div>
-
-  <!-- Modal: ta bort uppgift -->
-  <div id="deleteModal" class="modal" hidden>
-    <div class="modal__content">
-      <h3 class="danger-text">OBS! Vill du ta bort uppgiften?</h3>
-      <div class="modal__actions">
-        <button id="delNo" class="btn secondary">Avbryt</button>
-        <button id="delYes" class="btn danger">Ta bort</button>
-      </div>
+    <div style="display:flex; gap:.5rem;">
+      <button id="applyDataset" class="btn" style="flex:1;" type="button">Visa</button>
+      <button id="exitDemo" class="btn secondary" style="flex:1;" type="button">Avsluta demo</button>
     </div>
-  </div>
+    <small id="modeHint" class="hint">Läge: <strong>Normal (server)</strong></small>
+    <small class="hint">Demo sparas i sessionen och påverkar inte din vanliga tavla.</small>
+  </aside>
 
-  <script src="app.js"></script>
-  
-<footer class="site-footer">
-  <div class="container-fluid bar">Skapat av Calle Kos</div>
-</footer>
+  <main class="right">
+    <div id="board"></div>
+  </main>
+</div>
+
+<!-- Modaler -->
+<div id="editModal" class="modal" hidden>
+  <div class="modal__content">
+    <h3>Redigera uppgift</h3>
+    <div class="field"><label for="editTitle">Titel</label><input id="editTitle" type="text" /></div>
+    <div class="field"><label for="editDesc">Beskrivning</label><textarea id="editDesc"></textarea></div>
+    <div class="modal__actions"><button id="cancelEdit" class="btn secondary">Avbryt</button><button id="saveEdit" class="btn">Spara</button></div>
+  </div>
+</div>
+
+<div id="colModal" class="modal" hidden>
+  <div class="modal__content">
+    <h3>Redigera kolumn</h3>
+    <div class="field"><label for="colEditName">Namn</label><input id="colEditName" type="text" /></div>
+    <div id="colMoveWrap" class="field" hidden><label for="colMoveSelect">Flytta befintliga uppgifter till</label><select id="colMoveSelect"></select></div>
+    <div class="modal__actions"><button id="colCancel" class="btn secondary">Avbryt</button><button id="colDelete" class="btn danger">Ta bort</button><button id="colSave" class="btn">Spara</button></div>
+  </div>
+</div>
+
+<div id="deleteModal" class="modal" hidden>
+  <div class="modal__content">
+    <h3 class="danger-text">OBS! Vill du ta bort uppgiften?</h3>
+    <div class="modal__actions"><button id="delNo" class="btn secondary">Avbryt</button><button id="delYes" class="btn danger">Ta bort</button></div>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+
+<footer class="site-footer"><div class="container-fluid bar">Skapat av Calle Kos</div></footer>
 </body>
 </html>

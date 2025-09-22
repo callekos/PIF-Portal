@@ -1,0 +1,28 @@
+{
+  "cols": [
+    {
+      "id": "todo",
+      "name": "Att göra"
+    },
+    {
+      "id": "doing",
+      "name": "Pågår"
+    },
+    {
+      "id": "done",
+      "name": "Klart"
+    },
+    {
+      "id": "5g17vsdk",
+      "name": "fsad"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "xb6maeul",
+      "title": "Annan",
+      "desc": "",
+      "col": "todo"
+    }
+  ]
+}

@@ -11,7 +11,18 @@
     {
       "id": "done",
       "name": "Klart"
+    },
+    {
+      "id": "5g17vsdk",
+      "name": "fsad"
     }
   ],
-  "tasks": []
+  "tasks": [
+    {
+      "id": "xb6maeul",
+      "title": "OPK",
+      "desc": "",
+      "col": "todo"
+    }
+  ]
 }
