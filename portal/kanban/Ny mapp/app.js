@@ -13,7 +13,7 @@ const normalizeDatasetId = (id) => id.replace(/-/g, "_");
 const DATASETS = {
   demo_utredare: "/data/mock/utredare.json",
   demo_opk:      "/data/mock/opk.json",
-  demo_lpo_chef: "/data/mock/lpo-chef.json",
+  demo_lpo_chef: "/data/mock/lpo-chef.json", // byt vid behov till rätt filnamn
   demo_annan:    "/data/mock/annan.json"
 };
 
@@ -115,7 +115,7 @@ function demoClearAll(){ Object.keys(sessionStorage).forEach(k => { if (k.starts
 
 // ==================== Globalt state & historik ====================
 let MODE = "normal";
-let CURRENT_DEMO = null; // vilket demo som är aktivt (id)
+let CURRENT_DEMO = null; // håller reda på vilket demo som är aktivt (id)
 let state = normalizeState({ cols: clone(DEFAULT_COLS), tasks: [] });
 
 const MAX_HISTORY = 10;
@@ -178,8 +178,9 @@ async function setMode(newMode, datasetId=null){
     if(!file){ alert("Okänt dataset: "+id); return; }
 
     try{
-      // Buffert finns?
+      // Först: finns demo-buffert för just DETTA dataset?
       state = demoLoad(id) || normalizeState(await fetchJSON(file));
+      // Spara bufferten under datasetets egen nyckel
       demoSave(id, state);
       if (modeHint) modeHint.textContent = `Läge: Demo (${label}) – sessionStorage`;
     }catch(e){
@@ -194,7 +195,7 @@ async function setMode(newMode, datasetId=null){
 
 // ===== Lägesknappar =====
 
-// Byt läge direkt via dropdownen
+// Direktaktivera läge när något väljs i dropdownen (ersätter behovet av "Visa/Avsluta demo")
 datasetSelect?.addEventListener("change", async (e) => {
   const raw = e.target.value;                // "" | "normal" | "demo_*"
   const val = normalizeDatasetId(raw);
@@ -202,13 +203,14 @@ datasetSelect?.addEventListener("change", async (e) => {
   else if (val)         await setMode("demo", val);
 });
 
-// (Legacy-knappar lämnas orörda om de råkar finnas i HTML)
 applyDatasetBtn?.addEventListener("click", async () => {
-  const raw = datasetSelect.value;
+  const raw = datasetSelect.value;               // "normal" | "demo_*"
   const val = normalizeDatasetId(raw);
   if (val === "normal") await setMode("normal");
   else                  await setMode("demo", val);
 });
+
+// "Avsluta demo" = till Normal men sparar alla demo-buffertar för vidare växling
 exitDemoBtn?.addEventListener("click", async () => {
   datasetSelect.value = "normal";
   await setMode("normal");
@@ -217,14 +219,14 @@ exitDemoBtn?.addEventListener("click", async () => {
 // ==================== Render ====================
 function updateHistoryButtons(){
   if(undoBtn) undoBtn.disabled=!UNDO_STACK.length;
-  if(redoBtn) undoBtn && (redoBtn.disabled=!REDO_STACK.length);
+  if(redoBtn) redoBtn.disabled=!REDO_STACK.length;
 }
 
 function render(){
   state = normalizeState(state);
   const cols = state.cols;
 
-  // kolumnselect för skapa-kort
+  // kolumnselect
   colSelect.innerHTML = "";
   cols.forEach(c => {
     const opt = document.createElement("option");
@@ -232,20 +234,14 @@ function render(){
     colSelect.appendChild(opt);
   });
 
+  // kolumner
   board.innerHTML = "";
-  cols.forEach((col, idx) => {
+  cols.forEach(col => {
     const wrap = document.createElement("div");
     wrap.className = "col";
     wrap.dataset.id = col.id;
-
-    // Accentfärg per kolumn: kända id:n fasta, nya får en palett
-    const ACCENTS = { todo:"#f59e0b", doing:"#3b82f6", done:"#10b981" };
-    const PALETTE = ["#a855f7","#ef4444","#06b6d4","#84cc16","#f97316","#0ea5e9","#14b8a6","#eab308","#22c55e"];
-    const accent  = ACCENTS[col.id] ?? PALETTE[idx % PALETTE.length];
-    wrap.style.setProperty("--accent", accent);
-
-    // dra-och-släpp för kolumner
     wrap.draggable = true;
+
     wrap.addEventListener("dragstart", (e) => {
       if (e.target.closest(".task")) return;
       e.dataTransfer.effectAllowed = "move";
@@ -299,7 +295,7 @@ function taskCard(task,col){
   const meta=document.createElement("div"); meta.className="meta";
   const tag=document.createElement("span"); tag.className="tag"; tag.textContent=col.name;
 
-  // Toppbar: trepunkter (redigera) + kryss (ta bort)
+  // ====== NYTT: liten toppbar med trepunkter (redigera) + kryss (ta bort) ======
   const topbar = document.createElement("div");
   topbar.className = "card-topbar";
 
@@ -317,10 +313,14 @@ function taskCard(task,col){
 
   topbar.appendChild(menuBtn);
   topbar.appendChild(delBtn);
+  // ====== SLUT NYTT ======
+
+  const acts=document.createElement("div"); acts.className="actions"; // lämnas orört för layoutens skull men används inte
+  // (gamla stora knappar borttagna)
 
   meta.appendChild(tag);
 
-  el.appendChild(topbar);
+  el.appendChild(topbar);  // lägg överst
   el.appendChild(title);
   el.appendChild(desc);
   el.appendChild(meta);
