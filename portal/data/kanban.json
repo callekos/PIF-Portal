@@ -15,15 +15,15 @@
   ],
   "tasks": [
     {
-      "id": "5rc5rt49",
-      "title": "fds",
-      "desc": "",
-      "col": "todo"
+      "id": "2a1r7el4",
+      "title": "Samordna Förmågeområdesledarna",
+      "desc": "Förmågeområdesledarna behöver sätta förmågan att sätta problemet i fokus i fokus.",
+      "col": "doing"
     },
     {
-      "id": "vvgebtq2",
-      "title": "fdsaf",
-      "desc": "fdsa",
+      "id": "m1wji28q",
+      "title": "DEMO",
+      "desc": "Den visuellt produkten behöver demas så att alla är med på hur allt hänger ihop.",
       "col": "todo"
     }
   ]

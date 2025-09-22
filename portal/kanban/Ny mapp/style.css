@@ -80,15 +80,23 @@ hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border); }
   transition: background .15s ease;
 }
 .btn:hover { background: var(--primary-hover); }
-.btn.secondary { background: #e5e7eb; color: var(--text); }
+.btn.secondary {
+  background: #e5e7eb;
+  color: var(--text);
+}
 .btn.secondary:hover { background: #d1d5db; }
-.btn.danger { background: var(--danger); color: #fff; }
+.btn.danger {
+  background: var(--danger);
+  color: #fff;
+}
 .btn.danger:hover { background: var(--danger-hover); }
 
 /* ===== Board & Kolumner ===== */
+/* ===== Board & Kolumner ===== */
 #board {
   display: grid;
-  /* 1rem är gapet mellan kolumnerna. 4 gaps vid 5 kolumner ⇒ 4 * 1rem */
+  /* 1rem är gapet mellan kolumnerna (se gap nedan).
+     Fyra mellanrum vid fem kolumner ⇒ 4 * 1rem */
   grid-template-columns: repeat(
     auto-fit,
     minmax(
@@ -100,6 +108,7 @@ hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border); }
   height: 100%;
   overflow: auto;
 }
+
 
 .col {
   display: flex;
@@ -129,7 +138,7 @@ hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border); }
 }
 .col.col-dragging { opacity: .6; }
 
-/* Highlight när man flyttar en KOLONN */
+/* === Highlight när man flyttar en KOLONN (hela kolumnen) === */
 .col.col-highlight {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -147,81 +156,26 @@ hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border); }
   transition: border-color .12s ease, background .12s ease;
 }
 
-/* Highlight när man flyttar en UPPGIFT */
+/* === Highlight när man flyttar en UPPGIFT (bara dropzonen) === */
 .dropzone.highlight { border-color: var(--primary); background: var(--highlight); }
 .dropzone.dragover  { border-color: var(--primary); }
 
 .empty { color: var(--muted); font-size: .9rem; }
 
-/* ===== Kort – struktur & toppbar ===== */
+/* ===== Kort ===== */
 .card {
-  position: relative;               /* för toppbarens absoluta positionering */
-  background: #fff;
+  background: #f9fafb;
   border: 1px solid var(--border);
-  border-left: 4px solid var(--accent, #94a3b8); /* accent från kolumnen, fallback neutral */
-  border-radius: 10px;
-  padding: .75rem;
-  margin-bottom: .75rem;
+  border-radius: 6px;
+  padding: .5rem;
+  margin-bottom: .5rem;
   cursor: grab;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  transition: box-shadow .2s ease, transform .1s ease, border-color .2s ease;
 }
-.card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transform: translateY(-1px);
-  border-color: #dfe3ea;
-}
-.card:active {
-  transform: scale(1.02);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-.card .title {
-  font-weight: 650;
-  font-size: 1rem;
-  margin-bottom: .25rem;
-  color: #0f172a;
-}
-.card .desc {
-  font-size: .92rem;
-  line-height: 1.45;
-  color: #374151;
-  margin-top: .25rem;
-}
-.card .meta { display: flex; justify-content: space-between; align-items: center; margin-top: .6rem; }
-.card .tag  { font-size: .72rem; font-weight: 500; background: #eef2f7; color: #374151; padding: .18rem .55rem; border-radius: 999px; border: 1px solid #e3e8ef; }
-
-/* Toppbar: trepunkter + kryss uppe till höger */
-.card-topbar {
-  position: absolute;
-  top: .35rem;
-  right: .35rem;
-  display: flex;
-  gap: .3rem;
-  margin: 0;
-}
-.card-topbar button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.05rem;
-  line-height: 1;
-  padding: .15rem .35rem;
-  color: #9ca3af;
-  border-radius: 8px;
-  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
-}
-.card-topbar button:hover {
-  color: #111827;
-  background: #f3f4f6;
-  box-shadow: inset 0 0 0 1px #e5e7eb;
-}
-.close-btn { font-weight: 700; }
-
-/* Defaultfärger för standardkolumnerna */
-.col[data-id="todo"]  { --accent: #f59e0b; } /* gul */
-.col[data-id="doing"] { --accent: #3b82f6; } /* blå */
-.col[data-id="done"]  { --accent: #10b981; } /* grön */
+.card .title { font-weight: 700; }
+.card .desc { font-size: .9rem; margin-top: .25rem; color: #374151; }
+.card .meta { display: flex; justify-content: space-between; align-items: center; margin-top: .5rem; }
+.card .tag { font-size: .7rem; background: #e5e7eb; padding: .1rem .4rem; border-radius: 4px; }
+.card .actions { display: flex; gap: .25rem; }
 
 /* ===== Modal ===== */
 .modal {
@@ -244,8 +198,6 @@ hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border); }
   .wrap { flex-direction: column; }
   .left { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
 }
-
-/* ===== Footer ===== */
 .footer {
   position: fixed;
   bottom: 0;
@@ -258,4 +210,122 @@ hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border); }
   border-top: 1px solid #ddd;
   color: #555;
   z-index: 1000;
+}
+/* Kortet behöver en position-kontekst */
+.card {
+  position: relative;
+}
+
+/* Lägg knapparna absolut i övre högra hörnet */
+.card-topbar {
+  position: absolute;
+  top: .35rem;     /* justera vid behov */
+  right: .35rem;
+  display: flex;
+  gap: .3rem;
+  margin: 0;       /* ingen extra radhöjd */
+}
+
+/* behåll dina knappstilar som de är */
+.card-topbar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: .1rem .25rem;
+  color: #555;
+  border-radius: .4rem;
+}
+.card-topbar button:hover { background: #f2f2f2; color: #000; }
+.close-btn { font-weight: 700; }
+
+
+/* === KORT: visuella förbättringar === */
+
+/* Grund – lite rundare, vit bakgrund, subtil skugga och mjuka transitions */
+.card {
+  background: #fff;                 /* överstyr #f9fafb för mer kontrast */
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .75rem;
+  margin-bottom: .75rem;
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: box-shadow .2s ease, transform .1s ease, border-color .2s ease;
+}
+
+/* Hover – lite “lyft” men sobert */
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+  border-color: #dfe3ea;
+}
+
+/* Drag-feedback – förstärk lyftet när man håller i kortet */
+.card:active {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* Titel – tydligare typografi och liten separation */
+.card .title {
+  font-weight: 650;
+  font-size: 1rem;
+  margin-bottom: .25rem;
+  color: #0f172a;
+}
+
+/* Brödtext – lite lugnare färg och radavstånd */
+.card .desc {
+  font-size: .92rem;
+  line-height: 1.45;
+  color: #374151;
+  margin-top: .25rem;
+}
+
+/* Meta-raden – lite mer luft uppåt */
+.card .meta {
+  margin-top: .6rem;
+}
+
+/* Taggen – chip-stil */
+.card .tag {
+  font-size: .72rem;
+  font-weight: 500;
+  background: #eef2f7;
+  color: #374151;
+  padding: .18rem .55rem;
+  border-radius: 999px;
+  border: 1px solid #e3e8ef;
+}
+
+/* Toppbarens knappar – diskreta i vila, tydliga på hover */
+.card-topbar button {
+  color: #9ca3af;
+  padding: .15rem .35rem;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.card-topbar button:hover {
+  color: #111827;
+  background: #f3f4f6;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
+}
+
+/* Vänster accentkant per kolumn (lågmäld men ger struktur) */
+.col[data-id="todo"]  .card { border-left: 4px solid #f59e0b; } /* gul – Att göra */
+.col[data-id="doing"] .card { border-left: 4px solid #3b82f6; } /* blå – Pågår */
+.col[data-id="done"]  .card { border-left: 4px solid #10b981; } /* grön – Klart */
+
+/* (Behåll absolut placerad toppbar från tidigare) */
+.card { position: relative; }
+.card-topbar {
+  position: absolute;
+  top: .35rem;
+  right: .35rem;
+  display: flex;
+  gap: .3rem;
+  margin: 0;
 }

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualisering - Kanban-tavla</title>
+
+  <link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .card .desc, .card .title { white-space: pre-line; word-wrap: break-word; }
+    .hint { font-size: 12px; color:#6b7280; margin-top:8px; display:block; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container-fluid bar">
+    <div class="nav-left">
+      <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
+    </div>
+    <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
+    <div class="nav-right">
+      <select id="datasetSelect" title="Välj demo/normal" style="margin-right:.5rem;">
+        <option value="" selected disabled>Demo</option>
+        <option value="normal">Normal (min tavla)</option>
+        <option value="demo_utredare">Utredare</option>
+        <option value="demo_opk">OPK</option>
+        <option value="demo_lpo_chef">LPO-Chef</option>
+        <option value="demo_annan">Annan</option>
+      </select>
+      <button id="undoBtn"   class="btn secondary" type="button">Ångra</button>
+      <button id="redoBtn"   class="btn secondary" type="button">Gör om</button>
+      <button id="exportBtn" class="btn secondary" type="button">Exportera</button>
+      <button id="clearBtn"  class="btn danger"    type="button">Rensa</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="left">
+    <form id="taskForm">
+      <h3>Ny uppgift</h3>
+      <div class="field">
+        <label for="title">Titel</label>
+        <input id="title" type="text" />
+      </div>
+      <div class="field">
+        <label for="desc">Beskrivning (valfritt)</label>
+        <textarea id="desc"></textarea>
+      </div>
+      <div class="field">
+        <label for="col">Lägg till i kolumn</label>
+        <select id="col"></select>
+      </div>
+      <button class="btn" type="submit">Skapa ny uppgift</button>
+    </form>
+
+    <hr />
+
+    <div class="panel-footer">
+      <h3>Ny kolumn</h3>
+      <form id="colForm" class="inline-form">
+        <input id="colName" type="text" placeholder="" />
+        <button class="btn" type="submit">Skapa ny kolumn</button>
+      </form>
+    </div>
+
+<hr />
+
+<div class="panel-footer">
+  </aside>
+
+  <main class="right">
+    <div id="board"></div>
+  </main>
+</div>
+
+<!-- Modaler -->
+<div id="editModal" class="modal" hidden>
+  <div class="modal__content">
+    <h3>Redigera uppgift</h3>
+    <div class="field"><label for="editTitle">Titel</label><input id="editTitle" type="text" /></div>
+    <div class="field"><label for="editDesc">Beskrivning</label><textarea id="editDesc"></textarea></div>
+    <div class="modal__actions"><button id="cancelEdit" class="btn secondary">Avbryt</button><button id="saveEdit" class="btn">Spara</button></div>
+  </div>
+</div>
+
+<div id="colModal" class="modal" hidden>
+  <div class="modal__content">
+    <h3>Redigera kolumn</h3>
+    <div class="field"><label for="colEditName">Namn</label><input id="colEditName" type="text" /></div>
+    <div id="colMoveWrap" class="field" hidden><label for="colMoveSelect">Flytta befintliga uppgifter till</label><select id="colMoveSelect"></select></div>
+    <div class="modal__actions"><button id="colCancel" class="btn secondary">Avbryt</button><button id="colDelete" class="btn danger">Ta bort</button><button id="colSave" class="btn">Spara</button></div>
+  </div>
+</div>
+
+<div id="deleteModal" class="modal" hidden>
+  <div class="modal__content">
+    <h3 class="danger-text">OBS! Vill du ta bort uppgiften?</h3>
+    <div class="modal__actions"><button id="delNo" class="btn secondary">Avbryt</button><button id="delYes" class="btn danger">Ta bort</button></div>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+
+<footer class="site-footer"><div class="container-fluid bar">Skapat av Calle Kos</div></footer>
+</body>
+</html>
