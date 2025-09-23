@@ -1,6 +1,6 @@
 // ==================== DATASET & LAGRING ====================
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-const SERVER_FN_URL = IS_LOCAL
+const SERVER_FN_URL = "/api/kanban";
   ? "/api/kanban"
   : `${location.origin}/.netlify/functions/kanban`;
 
