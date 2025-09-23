@@ -1,7 +1,7 @@
 // ==================== DATASET & LAGRING ====================
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
-// Använd samma URL i dev & prod
+// Använd samma URL i dev & prod – proxas i Netlify via _redirects
 const SERVER_FN_URL = "/api/kanban";
 
 // Bas-nyckel; vi gör en per-demo med suffix
