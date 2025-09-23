@@ -1,8 +1,9 @@
 // ==================== DATASET & LAGRING ====================
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+
+// Samma URL i dev & prod. I dev hanteras den av Express (server.js).
+// I prod proxas den till Netlify-funktionen via portal/_redirects.
 const SERVER_FN_URL = "/api/kanban";
-  ? "/api/kanban"
-  : `${location.origin}/.netlify/functions/kanban`;
 
 // Bas-nyckel; vi gör en per-demo med suffix
 const STORAGE_KEY_DEMO_BASE = "kanban_demo_v1";
@@ -23,7 +24,7 @@ const DATASETS = {
 const DATASET_LABELS = {
   demo_utredare: "Utredare",
   demo_opk:      "OPK",
-  demo_lpo_chef: "LPO-Chef",
+  demo_lpo_chef: "LPO‑Chef",
   demo_annan:    "Annan"
 };
 
@@ -69,7 +70,7 @@ async function fetchJSON(path) {
   const text = await res.text();
   try { return JSON.parse(text); }
   catch (e) {
-    console.error("JSON-parse-fel för", path, "Innehåll:", text);
+    console.error("JSON‑parse‑fel för", path, "Innehåll:", text);
     throw new Error(`Ogiltig JSON i ${path}`);
   }
 }
