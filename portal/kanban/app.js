@@ -1,6 +1,8 @@
 // ==================== DATASET & LAGRING ====================
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-const SERVER_FN_URL = IS_LOCAL ? "/api/kanban" : "/.netlify/functions/kanban";
+const SERVER_FN_URL = IS_LOCAL
+  ? "/api/kanban"
+  : `${location.origin}/.netlify/functions/kanban`;
 
 // Bas-nyckel; vi gör en per-demo med suffix
 const STORAGE_KEY_DEMO_BASE = "kanban_demo_v1";
