@@ -3,14 +3,7 @@
   external_node_modules = ["@netlify/blobs"]
 
 [[redirects]]
-  # Skicka igenom alla funktionsanrop och behåll HTTP-metoden (PUT, POST etc.)
-  from = "/.netlify/functions/*"
-  to   = "/.netlify/functions/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  # Fallback för Single-Page-Application
-  from = "/*"
-  to   = "/index.html"
+  # Fallback för SPA – allt annat än funktioner hamnar på index.html
+  from   = "/*"
+  to     = "/index.html"
   status = 200
