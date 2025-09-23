@@ -16,7 +16,7 @@ exports.handler = async (event) => {
   }
 
   const store = getStore({ name: 'kanban-store' });
-  const key = 'board-default'; // enkelt: en tavla
+  const key = 'board-default';
 
   if (event.httpMethod === 'GET') {
     const raw = await store.get(key); // string|null
@@ -25,10 +25,11 @@ exports.handler = async (event) => {
   }
 
   if (event.httpMethod === 'PUT') {
-    // Vi sparar exakt det frontend skickar (validering kan läggas till vid behov)
+    // Spara exakt det frontend skickar
     await store.set(key, event.body || '{}');
     return { statusCode: 204, headers };
   }
 
+  // Allt annat -> 405
   return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
 };
