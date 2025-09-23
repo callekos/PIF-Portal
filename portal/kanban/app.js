@@ -1,8 +1,7 @@
 // ==================== DATASET & LAGRING ====================
 const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
-// Samma URL i dev & prod. I dev hanteras den av Express (server.js).
-// I prod proxas den till Netlify-funktionen via portal/_redirects.
+// Använd samma URL i dev & prod
 const SERVER_FN_URL = "/api/kanban";
 
 // Bas-nyckel; vi gör en per-demo med suffix
