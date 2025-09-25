@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Under uppbyggnad – PIF-portalen</title>
+
+  <!-- Gemensam stil (samma sökväg som i din mall) -->
+  <link rel="stylesheet" href="../../assets/css/common.css" />
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .wrap { min-height: 100%; display: flex; flex-direction: column; }
+
+    /* Layout för mittinnehållet */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      place-items: center;        /* centrera kortet vert/hor */
+    }
+
+    /* Headerknapparnas placering (matchar övriga sidor) */
+    .site-header .bar { position: relative; }
+    .site-header .nav-left{
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Kortet i mitten */
+    .wip-card{
+      width: min(720px, 92vw);
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      padding: 28px 28px 32px;
+      text-align: center;
+    }
+    .wip-title{
+      font-size: clamp(22px, 3.6vw, 28px);
+      margin: 12px 0 6px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .wip-sub{
+      color: #6b7280; /* grå */
+      font-size: 15px;
+      margin: 0 0 18px;
+    }
+    .wip-badges{
+      display: inline-flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .wip-badge{
+      background: #eef2ff;
+      color: #334155;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    /* Liten, ren illustration (inline SVG) */
+    .wip-illustration{
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 4px;
+      position: relative;
+    }
+    /* Skugga under ikonen */
+    .wip-illustration .shadow {
+      fill: rgba(0,0,0,.08);
+      animation: pulse 2.8s ease-in-out infinite;
+      transform-origin: center;
+    }
+    /* Mjuk vipp-animation på konen */
+    .wip-illustration .cone {
+      transform-origin: 60px 60px;
+      animation: tilt 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .6; }
+      50%      { transform: scale(1.06); opacity: .35; }
+    }
+    @keyframes tilt {
+      0%, 100% { transform: rotate(-3deg); }
+      50%      { transform: rotate(3deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="container-fluid bar">
+        <div class="nav-left">
+          <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
+          <button id="backBtn" class="btn secondary" type="button" style="display:none">← Tillbaka</button>
+        </div>
+        <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
+        <div class="nav-right"></div>
+      </div>
+    </header>
+
+    <!-- MITTDEL -->
+    <main>
+      <section class="wip-card" aria-labelledby="wip-title">
+        <div class="wip-illustration" aria-hidden="true">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <!-- mjuk skugga -->
+            <ellipse class="shadow" cx="60" cy="96" rx="28" ry="8"/>
+            <!-- varningskon -->
+            <g class="cone">
+              <!-- basplatta -->
+              <rect x="34" y="86" width="52" height="10" rx="4" fill="#cbd5e1"/>
+              <!-- konkropp -->
+              <path d="M60 20 L84 86 L36 86 Z" fill="#f97316"/>
+              <!-- vita band -->
+              <path d="M54 36 H66 L71 52 H49 Z" fill="#fff" opacity=".9"/>
+              <path d="M51 62 H69 L73 74 H47 Z" fill="#fff" opacity=".9"/>
+              <!-- kantlinje svag -->
+              <path d="M60 20 L84 86 L36 86 Z" fill="none" stroke="#ea580c" stroke-width="2" opacity=".6"/>
+            </g>
+          </svg>
+        </div>
+
+        <h1 id="wip-title" class="wip-title">Under uppbyggnad</h1>
+        <p class="wip-sub">
+          Den här vyn är på gång. Snart kan du följa upp och visualisera läget här.<br/>
+          Tills vidare – använd knapparna ovan för att gå vidare.
+        </p>
+
+        <div class="wip-badges" aria-hidden="true">
+          <span class="wip-badge">Design pågår</span>
+          <span class="wip-badge">Datastruktur skissas</span>
+          <span class="wip-badge">Visualiseringar planeras</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container bar">Skapat av Calle Kos</div>
+    </footer>
+  </div>
+
+  <!-- Gemensamt script (samma sökväg som i din mall) -->
+  <script src="../../kanban/app.js"></script>
+</body>
+</html>
