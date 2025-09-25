@@ -199,21 +199,40 @@
         </div>
       </section>
 
-      <section class="section" aria-labelledby="tools">
-        <h2 id="tools">Övriga verktyg</h2>
-        <div class="grid">
-          <a class="card link" href="/kanban/" title="Öppna Kanban-tavlan">
-            <h3>Mina uppgifter (Kanban)</h3>
-            <p>Din egen arbetsyta, här kan du se uppgifter som tilldelats dig eller som du själv skapat och dess status.</p>
-            <span class="perm">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 3v6c0 5.25-3.438 9.75-7 11-3.562-1.25-7-5.75-7-11V5l7-3z"/></svg>
-              Grundanvändare
-            </span>
-          </a>
-          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
-          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
-        </div>
-      </section>
+<section class="section" aria-labelledby="tools">
+  <h2 id="tools">Övriga verktyg</h2>
+  <div class="grid">
+
+    <!-- Kanban-kortet (oförändrat) -->
+    <a class="card link" href="/kanban/" title="Öppna Kanban-tavlan">
+      <h3>Mina uppgifter (Kanban)</h3>
+      <p>Din egen arbetsyta, här kan du se uppgifter som tilldelats dig eller som du själv skapat och dess status.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21 7 16h10l-5 5zM12 3v6m0 0H6m6 0h6" />
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+
+    <!-- Nytt kort: Mötesforum -->
+    <a class="card link" href="/motesforum/" title="Öppna Mötesforum">
+      <h3>Mötesforum</h3>
+      <p>Förbered, håll och följ upp Daglig ledning, Avstämning/Justering, Värdering och Inriktningsmöten. Skapa uppdrag och protokoll.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H7l-4 4V6a2 2 0 0 1 2-2z" />
+        </svg>
+        Ledningsfunktion
+      </span>
+    </a>
+
+    <!-- Placeholder-kort (oförändrade) -->
+    <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+    <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+
+  </div>
+</section>
     </main>
 
     <footer class="site-footer">
