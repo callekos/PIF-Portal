@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mötesforum – PIF-portalen</title>
+  <link rel="stylesheet" href="../../assets/css/common.css">
+  <style>
+    /* === Sticky footer === */
+    html, body { height: 100%; }
+    .wrap { min-height: 100%; display: flex; flex-direction: column; }
+    main { flex: 1; }
+
+    /* === Kortlayout === */
+    main{ max-width:1100px; margin:0 auto 32px; padding:12px 20px 0; }
+    .section{
+      background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+      box-shadow:0 8px 20px rgba(15,23,42,.06); padding:22px; margin-top:16px;
+    }
+    .section h2{ margin:0 0 16px 0; font-size:18px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr)); /* fyra kolumner */
+      gap:14px;
+    }
+    @media (max-width:1000px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (max-width:560px){ .grid{grid-template-columns: 1fr;} }
+
+    .card{
+      display:flex; flex-direction:column; background:#fff; border:1px solid #e5e7eb;
+      border-radius:12px; padding:18px; box-shadow:0 8px 20px rgba(15,23,42,.06);
+      gap:8px; text-decoration:none; color:inherit; transition:transform .06s ease, box-shadow .15s ease;
+    }
+    .card:hover{ transform:translateY(-1px) }
+    .card h3{ margin:0; font-size:18px; }
+    .card p{ margin:0; color:#64748b; font-size:14px; line-height:1.5; flex:1; }
+    .card .perm{
+      margin-top:6px; align-self:flex-start; display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px; font-size:12px; font-weight:600; color:#374151; background:#f3f4f6;
+      border:1px solid #e5e7eb; border-radius:999px;
+    }
+    .card .perm svg{ width:14px; height:14px; display:block }
+
+    /* Headerknapp */
+    .site-header .bar{ position: relative; }
+    .site-header .nav-left{
+      position:absolute; left:16px; top:50%; transform:translateY(-50%);
+      display:flex; align-items:center; gap:8px;
+    }
+    .btn{ display:inline-block; padding:.45rem .8rem; border:none; border-radius:8px;
+      cursor:pointer; font:inherit; background:#2563eb; color:#fff; transition:background .15s ease; }
+    .btn:hover{ background:#1d4ed8; }
+    .btn.secondary{ background:#e5e7eb; color:#111827; }
+    .btn.secondary:hover{ background:#d1d5db; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="container-fluid bar">
+        <div class="nav-left">
+          <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
+        </div>
+        <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
+        <div class="nav-right"></div>
+      </div>
+    </header>
+
+    <!-- MITTDEL: Mötesforum -->
+    <main>
+      <section class="section" aria-labelledby="mf">
+        <h2 id="mf">Mötesforum</h2>
+
+        <div class="grid">
+          <!-- Daglig ledning -->
+          <a class="card link" href="daglig/" title="Öppna Daglig ledning">
+            <h3>Daglig ledning</h3>
+            <p>Snabbt läge för senaste dygnet. Uppdrag och kända händelser.</p>
+              <span class="perm">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+                  <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+                </svg>
+                Ledningsfunktion
+              </span>
+          </a>
+
+          <!-- Avstämning -->
+          <a class="card link" href="avstamning/" title="Öppna Avstämning / Justeringsmöte">
+            <h3>Avstämning / Justeringsmöte</h3>
+            <p>Uppföljning och justering av åtgärder varannan vecka.</p>
+              <span class="perm">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+                  <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+                </svg>
+                Ledningsfunktion
+              </span>
+          </a>
+
+          <!-- Värderingsmöte -->
+          <a class="card link" href="vardering/" title="Öppna Värderingsmöte">
+            <h3>Värderingsmöte</h3>
+            <p>Analys och effektvärdering av åtgärder, var 8:e vecka.</p>
+              <span class="perm">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+                  <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+                </svg>
+                Ledningsfunktion
+              </span>
+          </a>
+
+          <!-- Inriktningsmöte -->
+          <a class="card link" href="inriktning/" title="Öppna Inriktningsmöte">
+            <h3>Inriktningsmöte</h3>
+            <p>Långsiktiga prioriteringar och årlig planering.</p>
+              <span class="perm">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+                  <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+                </svg>
+                Ledningsfunktion
+              </span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container bar">Skapat av Calle Kos</div>
+    </footer>
+  </div>
+
+<script src="../../kanban/app.js"></script>
+</body>
+</html>

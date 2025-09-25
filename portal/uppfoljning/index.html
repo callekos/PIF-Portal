@@ -1,52 +1,69 @@
 <!doctype html>
 <html lang="sv">
 <head>
-  <link rel="stylesheet" href="../../assets/css/common.css">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GPT – PIF-portalen</title>
+  <title>Uppföljning – PIF-portalen</title>
+  <link rel="stylesheet" href="../../assets/css/common.css">
   <style>
-    html,body { height:100%; margin:0; }
-    .wrap { min-height:100%; display:flex; flex-direction:column; }
-    main { flex:1; max-width:1100px; margin:0 auto; padding:20px; }
+    /* === Sticky footer === */
+    html, body { height: 100%; }
+    .wrap { min-height: 100%; display: flex; flex-direction: column; }
+    main { flex: 1; }
 
-    /* --- Placera knappen exakt som på Kanban --- */
-    .site-header .bar { position: relative; }
+    /* === Kortlayout === */
+    main{ max-width:1100px; margin:0 auto 32px; padding:12px 20px 0; }
+    .section{
+      background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+      box-shadow:0 8px 20px rgba(15,23,42,.06); padding:22px; margin-top:16px;
+    }
+    .section h2{ margin:0 0 16px 0; font-size:18px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width:1000px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (max-width:560px){ .grid{grid-template-columns: 1fr;} }
+
+    .card{
+      display:flex; flex-direction:column; background:#fff; border:1px solid #e5e7eb;
+      border-radius:12px; padding:18px; box-shadow:0 8px 20px rgba(15,23,42,.06);
+      gap:8px; text-decoration:none; color:inherit; transition:transform .06s ease, box-shadow .15s ease;
+    }
+    .card:hover{ transform:translateY(-1px); }
+    .card h3{ margin:0; font-size:18px; }
+    .card p{ margin:0; color:#64748b; font-size:14px; line-height:1.5; flex:1; }
+
+    .perm{
+      margin-top:6px; align-self:flex-start; display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px; font-size:12px; font-weight:600; color:#374151; background:#f3f4f6;
+      border:1px solid #e5e7eb; border-radius:999px;
+    }
+    .perm svg{ width:14px; height:14px; display:block }
+
+    /* Header-knappar */
+    .site-header .bar{ position: relative; }
     .site-header .nav-left{
-      position:absolute;
-      left:16px;                  /* samma vänsterkant som Kanban */
-      top:50%;
-      transform:translateY(-50%);
+      position:absolute; left:16px; top:50%; transform:translateY(-50%);
       display:flex; align-items:center; gap:8px;
     }
-
-    /* --- IDENTISKA knappregler som i kanban/style.css --- */
-    .btn{
-      display:inline-block;
-      padding:.45rem .8rem;
-      border:none;                     /* viktigt: ingen kantlinje */
-      border-radius:8px;               /* samma radie */
-      cursor:pointer;
-      font:inherit;
-      background:#2563eb;              /* primär (behövs ej för secondary, men ofarligt) */
-      color:#fff;
-      transition:background .15s ease;
-    }
+    .btn{ display:inline-block; padding:.45rem .8rem; border:none; border-radius:8px;
+      cursor:pointer; font:inherit; background:#2563eb; color:#fff; transition:background .15s ease; }
     .btn:hover{ background:#1d4ed8; }
-    .btn.secondary{
-      background:#e5e7eb;
-      color:#111827;                   /* var(--text) i kanban */
-    }
+    .btn.secondary{ background:#e5e7eb; color:#111827; }
     .btn.secondary:hover{ background:#d1d5db; }
   </style>
 </head>
 <body>
   <div class="wrap">
 
-    <!-- HEADER: fluid bredd som Kanban; brand centreras via common.css -->
+    <!-- HEADER -->
     <header class="site-header">
       <div class="container-fluid bar">
         <div class="nav-left">
+          <button id="backBtn" class="btn secondary" type="button" style="display:none">← Tillbaka</button>
           <button id="toPortalBtn" class="btn secondary" type="button">← Till PIF-portalen</button>
         </div>
         <div class="brand">PIF-Portalen – Förmågan att sätta <b>problemet i fokus</b></div>
@@ -54,17 +71,135 @@
       </div>
     </header>
 
-    <!-- TOM MITTDEL -->
+    <!-- MITTDEL: Uppföljning -->
     <main>
-      <!-- bygg vidare här -->
+<!-- Lokalt -->
+<section class="section" aria-labelledby="lokalt">
+  <h2 id="lokalt">Lokalt</h2>
+  <div class="grid">
+    <a class="card link" href="lokalt-daglig-ledning/" title="Daglig ledning">
+      <h3>Daglig ledning</h3>
+      <p>Följ upp den dagliga ledningen och kortsiktiga åtgärder.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+          <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+
+    <a class="card link" href="lokalt-operativ-inriktning/" title="Operativ inriktning (Lokalt)">
+      <h3>Operativ inriktning</h3>
+      <p>Lokala prioriteringar och inriktningar för arbetet. Fokus på åtgärder i närtid.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+          <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+
+    <a class="card link" href="lokalt-operativ-plan/" title="Operativ plan (Lokalt)">
+      <h3>Operativ plan</h3>
+      <p>Långsiktig lokal planering och uppföljning av arbetet.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+          <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+
+    <a class="card link" href="lokalt-ppi-studenten-2025/" title="Planlagd polisinsats (PPI) Studenten 2025">
+      <h3>Planlagd polisinsats (PPI) Studenten 2025</h3>
+      <p>Uppföljning av planlagd polisinsats kopplad till studenten 2025. Här följs måluppfyllelse och resultat upp.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+          <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- Polisområde -->
+<section class="section" aria-labelledby="polisomrade">
+  <h2 id="polisomrade">Polisområde</h2>
+  <div class="grid">
+    <a class="card link" href="polisomrade-operativ-inriktning/" title="Operativ inriktning (Polisområde)">
+      <h3>Operativ inriktning</h3>
+      <p>Polisområdets prioriteringar och uppföljning. Samordning av resurser och åtgärder på mellannivå.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+          <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+
+    <a class="card link" href="ppi-bamse/" title="Planlagd polisinsats (PPI) Bamse">
+      <h3>Planlagd polisinsats (PPI) Bamse</h3>
+      <p>Uppföljning av den planlagda polisinsatsen Bamse. Här visualiseras mål, åtgärder och resultat.</p>
+      <span class="perm">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+          <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+        </svg>
+        Grundanvändare
+      </span>
+    </a>
+
+    <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+  </div>
+</section>
+
+      <!-- Regionalt -->
+      <section class="section" aria-labelledby="regionalt">
+        <h2 id="regionalt">Regionalt</h2>
+        <div class="grid">
+          <a class="card link" href="regional-strategisk-inriktning/" title="Regional strategisk inriktning">
+            <h3>Regional strategisk inriktning</h3>
+            <p>Regionens övergripande prioriteringar och resursinriktning. Kopplar det operativa arbetet till regionala mål.</p>
+                         <span class="perm">
+              <!-- Sköld-ikon, identisk på alla kort -->
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+                <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+              </svg>
+              Grundanvändare
+            </span>
+          </a>
+          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+        </div>
+      </section>
+
+      <!-- Nationellt -->
+      <section class="section" aria-labelledby="nationellt">
+        <h2 id="nationellt">Nationellt</h2>
+        <div class="grid">
+          <a class="card link" href="strategisk-verksamhetsplan/" title="Strategisk verksamhetsplan">
+            <h3>Strategisk verksamhetsplan</h3>
+            <p>Nationella och långsiktiga målsättningar. Planer som styr verksamhetens inriktning över flera år.</p>
+                         <span class="perm">
+              <!-- Sköld-ikon, identisk på alla kort -->
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+                <path d="M12 2 19 6v6c0 5-3.5 9.7-7 10-3.5-.3-7-5-7-10V6l7-4z"/>
+              </svg>
+              Grundanvändare
+            </span>
+          </a>
+          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+          <div class="card" aria-hidden="true" style="visibility:hidden"></div>
+        </div>
+      </section>
     </main>
 
-    <!-- FOOTER: enligt din spec -->
+    <!-- FOOTER -->
     <footer class="site-footer">
       <div class="container bar">Skapat av Calle Kos</div>
     </footer>
   </div>
 
-  <script src="../../app.js"></script>
+<script src="../../kanban/app.js"></script>
 </body>
 </html>

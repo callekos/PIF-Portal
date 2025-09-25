@@ -1,64 +1,155 @@
-// ==================== DATASET & LAGRING ====================
-const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+/* ===================== Gemensamma helpers ===================== */
 
-// Använd samma URL i dev & prod – proxas i Netlify via _redirects
+// Kandidater för portalens startsida (för dev-servrar som inte löser katalogindex)
+function getHomeCandidates() {
+  const list = [];
+
+  // 1) Per-sida override: <body data-home="/portal/index.html">
+  const attr = document.body?.dataset?.home;
+  if (attr) list.push(attr);
+
+  // 2) Vanliga varianter – ordnade efter sannolikhet
+  list.push("/");                  // många dev-servrar visar portalen här
+  list.push("/index.html");
+  list.push("/portal/");           // om katalogindex är på
+  list.push("/portal/index.html"); // exakt fil
+
+  return [...new Set(list.filter(Boolean))];
+}
+
+// Prova kandidaterna och returnera första URL som svarar 200
+async function resolveHome() {
+  const candidates = getHomeCandidates();
+  for (const path of candidates) {
+    try {
+      const res = await fetch(path, { method: "GET", cache: "no-store" });
+      if (res.ok) return path;
+    } catch (_) {}
+  }
+  return "/"; // sista fallback
+}
+
+// En nivå upp från nuvarande sida
+function parentPath() {
+  const clean = (location.pathname || "/").replace(/\/+$/, "");
+  const parts = clean.split("/").filter(Boolean);
+  parts.pop();
+  const up = "/" + parts.join("/");
+  return up.endsWith("/") ? up : up + "/";
+}
+
+
+/* ===================== Knapp-beteende ===================== */
+
+// Portal-knapp: fungerar för både <button> och <a>
+function setupToPortalButton() {
+  const el = document.getElementById("toPortalBtn");
+  if (!el) return;
+
+  el.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const dest = await resolveHome();
+    location.assign(dest);
+  });
+
+  if (el.tagName === "A") el.setAttribute("href", "#");
+}
+
+/**
+ * Back-knappen visas när sidan ligger minst 2 steg BORTOM portalen,
+ * där portalens bas autodetekteras ("/", "/portal/", "/portal/index.html", etc).
+ */
+async function setupBackButton() {
+  const backBtn   = document.getElementById("backBtn");
+  const portalBtn = document.getElementById("toPortalBtn");
+  if (!backBtn || !portalBtn) return;
+
+  // 1) Hitta portalens "bas"
+  const homePath = await resolveHome(); // t.ex. "/", "/portal/", "/portal/index.html"
+  let base = homePath;
+  try { base = new URL(base, location.origin).pathname; } catch {}
+  base = base.replace(/index\.html$/i, "");
+  if (!base.endsWith("/")) base += "/";
+
+  // 2) Räkna djup relativt portalens bas
+  const current = (location.pathname || "/").replace(/\/+$/, "") + "/";
+  const rel = current.startsWith(base) ? current.slice(base.length) : current.replace(/^\/+/, "");
+  const depthFromPortal = rel.split("/").filter(Boolean).length;
+
+  // 3) Visa "Tillbaka" när vi är minst TVÅ steg bort från portalen
+  if (depthFromPortal >= 2) {
+    backBtn.style.display = "inline-block";
+  } else {
+    backBtn.style.display = "none";
+  }
+  portalBtn.style.display = "inline-block";
+
+  // Klickbeteende
+  backBtn.onclick = () => {
+    if (history.length > 1) {
+      history.back();
+    } else {
+      // Gå upp en nivå om historik saknas
+      const clean = current.replace(/\/+$/, "");
+      const parts = clean.split("/").filter(Boolean);
+      parts.pop();
+      const up = "/" + parts.join("/") + "/";
+      location.assign(up);
+    }
+  };
+}
+
+
+/* ===================== Dataset & lagring ===================== */
+
 const SERVER_FN_URL = "/api/kanban";
-
-// Bas-nyckel; vi gör en per-demo med suffix
 const STORAGE_KEY_DEMO_BASE = "kanban_demo_v1";
 const demoKey = (id) => `${STORAGE_KEY_DEMO_BASE}:${id}`;
+const normalizeDatasetId = (id) => (id || "").replace(/-/g, "_");
 
-// Tillåt både bindestreck och underscore i values från <select>
-const normalizeDatasetId = (id) => id.replace(/-/g, "_");
-
-// DEMO-filer – ABSOLUTA paths. Filnamn måste finnas i portal/data/mock/
 const DATASETS = {
   demo_utredare: "/data/mock/utredare.json",
-  demo_opk:      "/data/mock/opk.json",
+  demo_opk: "/data/mock/opk.json",
   demo_lpo_chef: "/data/mock/lpo-chef.json",
-  demo_annan:    "/data/mock/annan.json"
+  demo_annan: "/data/mock/annan.json",
 };
 
-// Mänskliga etiketter för hinten uppe till vänster
 const DATASET_LABELS = {
   demo_utredare: "Utredare",
-  demo_opk:      "OPK",
-  demo_lpo_chef: "LPO‑Chef",
-  demo_annan:    "Annan"
+  demo_opk: "OPK",
+  demo_lpo_chef: "LPO-Chef",
+  demo_annan: "Annan",
 };
 
-// Valfri bootstrap-fil för Normal
 const DEFAULT_NORMAL_BOOTSTRAP = "/data/mock/_normal_bootstrap.json";
 
-// UI – dataset
-const datasetSelect   = document.getElementById("datasetSelect");
-const applyDatasetBtn = document.getElementById("applyDataset");
-const exitDemoBtn     = document.getElementById("exitDemo");
-const modeHint        = document.getElementById("modeHint");
 
-// ==================== Standardkolumner ====================
+/* ===================== Standardkolumner ===================== */
+
 const DEFAULT_COLS = [
-  { id: "todo",  name: "Att göra" },
+  { id: "todo", name: "Att göra" },
   { id: "doing", name: "Pågår" },
-  { id: "done",  name: "Klart" }
+  { id: "done", name: "Klart" },
 ];
 
-// ==================== Hjälp & normalisering ====================
+
+/* ===================== Hjälp & normalisering ===================== */
+
 const clone = (v) => JSON.parse(JSON.stringify(v));
-const uid   = () => Math.random().toString(36).slice(2,10);
+const uid = () => Math.random().toString(36).slice(2, 10);
 
 function normalizeState(s) {
   const out = s && typeof s === "object" ? clone(s) : {};
   if (!Array.isArray(out.cols) || out.cols.length === 0) out.cols = clone(DEFAULT_COLS);
   if (!Array.isArray(out.tasks)) out.tasks = [];
-  const colIds = new Set(out.cols.map(c => c.id));
+  const colIds = new Set(out.cols.map((c) => c.id));
   out.tasks = out.tasks
-    .filter(t => t && typeof t === "object")
-    .map(t => ({
+    .filter((t) => t && typeof t === "object")
+    .map((t) => ({
       id: t.id || uid(),
       title: t.title || "",
       desc: t.desc || "",
-      col: colIds.has(t.col) ? t.col : out.cols[0].id
+      col: colIds.has(t.col) ? t.col : out.cols[0].id,
     }));
   return out;
 }
@@ -67,14 +158,16 @@ async function fetchJSON(path) {
   const res = await fetch(path, { cache: "no-cache" });
   if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} för ${path}`);
   const text = await res.text();
-  try { return JSON.parse(text); }
-  catch (e) {
-    console.error("JSON‑parse‑fel för", path, "Innehåll:", text);
+  try {
+    return JSON.parse(text);
+  } catch {
     throw new Error(`Ogiltig JSON i ${path}`);
   }
 }
 
-// ------ Normal (server) ------
+
+/* ===================== Normal (server) ===================== */
+
 async function serverLoad() {
   try {
     const res = await fetch(SERVER_FN_URL, { method: "GET" });
@@ -91,8 +184,7 @@ async function serverLoad() {
       }
     }
     throw new Error(`Server load error: ${res.status}`);
-  } catch (e) {
-    console.warn("serverLoad fail:", e.message);
+  } catch {
     return normalizeState({ cols: clone(DEFAULT_COLS), tasks: [] });
   }
 }
@@ -103,72 +195,119 @@ async function serverSave(state) {
     await fetch(SERVER_FN_URL, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(clean)
+      body: JSON.stringify(clean),
     });
-  } catch (e) {
-    console.warn("serverSave fail:", e.message);
+  } catch {
+    /* tolerera offline */
   }
 }
 
-// ------ Demo (session) ------
-function demoLoad(id)  { const r = sessionStorage.getItem(demoKey(id)); return r ? normalizeState(JSON.parse(r)) : null; }
-function demoSave(id,s){ sessionStorage.setItem(demoKey(id), JSON.stringify(normalizeState(s))); }
-function demoClearAll(){ Object.keys(sessionStorage).forEach(k => { if (k.startsWith(`${STORAGE_KEY_DEMO_BASE}:`)) sessionStorage.removeItem(k); }); }
 
-// ==================== Globalt state & historik ====================
+/* ===================== Demo (session) ===================== */
+
+const demoLoad = (id) => {
+  const r = sessionStorage.getItem(demoKey(id));
+  return r ? normalizeState(JSON.parse(r)) : null;
+};
+const demoSave = (id, s) => sessionStorage.setItem(demoKey(id), JSON.stringify(normalizeState(s)));
+const demoClearAll = () => {
+  Object.keys(sessionStorage).forEach((k) => {
+    if (k.startsWith(`${STORAGE_KEY_DEMO_BASE}:`)) sessionStorage.removeItem(k);
+  });
+};
+
+
+/* ===================== Globalt state & historik ===================== */
+
 let MODE = "normal";
-let CURRENT_DEMO = null; // vilket demo som är aktivt (id)
+let CURRENT_DEMO = null;
 let state = normalizeState({ cols: clone(DEFAULT_COLS), tasks: [] });
 
 const MAX_HISTORY = 10;
 const UNDO_STACK = [];
 const REDO_STACK = [];
 
-function pushHistory(){ UNDO_STACK.push(clone(state)); if(UNDO_STACK.length>MAX_HISTORY) UNDO_STACK.shift(); REDO_STACK.length=0; updateHistoryButtons(); }
-function undo(){ if(!UNDO_STACK.length) return; const prev=UNDO_STACK.pop(); REDO_STACK.push(clone(state)); if(REDO_STACK.length>MAX_HISTORY) REDO_STACK.shift(); state=normalizeState(prev); persist(); render(); updateHistoryButtons(); }
-function redo(){ if(!REDO_STACK.length) return; const next=REDO_STACK.pop(); UNDO_STACK.push(clone(state)); if(UNDO_STACK.length>MAX_HISTORY) UNDO_STACK.shift(); state=normalizeState(next); persist(); render(); updateHistoryButtons(); }
-function persist(){
+function pushHistory() {
+  UNDO_STACK.push(clone(state));
+  if (UNDO_STACK.length > MAX_HISTORY) UNDO_STACK.shift();
+  REDO_STACK.length = 0;
+  updateHistoryButtons();
+}
+function undo() {
+  if (!UNDO_STACK.length) return;
+  const prev = UNDO_STACK.pop();
+  REDO_STACK.push(clone(state));
+  if (REDO_STACK.length > MAX_HISTORY) REDO_STACK.shift();
+  state = normalizeState(prev);
+  persist();
+  render();
+  updateHistoryButtons();
+}
+function redo() {
+  if (!REDO_STACK.length) return;
+  const next = REDO_STACK.pop();
+  UNDO_STACK.push(clone(state));
+  if (UNDO_STACK.length > MAX_HISTORY) UNDO_STACK.shift();
+  state = normalizeState(next);
+  persist();
+  render();
+  updateHistoryButtons();
+}
+function persist() {
   if (MODE === "normal") serverSave(state);
   else if (CURRENT_DEMO) demoSave(CURRENT_DEMO, state);
 }
 
-// ==================== DOM ====================
-const board       = document.getElementById("board");
-const colSelect   = document.getElementById("col");
-const taskForm    = document.getElementById("taskForm");
-const colForm     = document.getElementById("colForm");
-const undoBtn     = document.getElementById("undoBtn");
-const redoBtn     = document.getElementById("redoBtn");
-const toPortalBtn = document.getElementById("toPortalBtn");
-const exportBtn   = document.getElementById("exportBtn");
-const clearBtn    = document.getElementById("clearBtn");
 
-// modaler
-const editModal  = document.getElementById("editModal");
-const editTitle  = document.getElementById("editTitle");
-const editDesc   = document.getElementById("editDesc");
-const saveEdit   = document.getElementById("saveEdit");
+/* ===================== DOM ===================== */
+
+const datasetSelect = document.getElementById("datasetSelect");
+const applyDatasetBtn = document.getElementById("applyDataset");
+const exitDemoBtn = document.getElementById("exitDemo");
+const modeHint = document.getElementById("modeHint");
+
+const board = document.getElementById("board");
+const colSelect = document.getElementById("col");
+const taskForm = document.getElementById("taskForm");
+const colForm = document.getElementById("colForm");
+const undoBtn = document.getElementById("undoBtn");
+const redoBtn = document.getElementById("redoBtn");
+const exportBtn = document.getElementById("exportBtn");
+const clearBtn = document.getElementById("clearBtn");
+
+const toPortalBtn = document.getElementById("toPortalBtn");
+const backBtn = document.getElementById("backBtn");
+
+// Modaler (kan saknas på sidor som inte har Kanban)
+const editModal = document.getElementById("editModal");
+const editTitle = document.getElementById("editTitle");
+const editDesc = document.getElementById("editDesc");
+const saveEdit = document.getElementById("saveEdit");
 const cancelEdit = document.getElementById("cancelEdit");
 
-const colModal      = document.getElementById("colModal");
-const colEditName   = document.getElementById("colEditName");
-const colMoveWrap   = document.getElementById("colMoveWrap");
+const colModal = document.getElementById("colModal");
+const colEditName = document.getElementById("colEditName");
+const colMoveWrap = document.getElementById("colMoveWrap");
 const colMoveSelect = document.getElementById("colMoveSelect");
-const colCancel     = document.getElementById("colCancel");
-const colDelete     = document.getElementById("colDelete");
-const colSave       = document.getElementById("colSave");
+const colCancel = document.getElementById("colCancel");
+const colDelete = document.getElementById("colDelete");
+const colSave = document.getElementById("colSave");
 
 const deleteModal = document.getElementById("deleteModal");
 const delYes = document.getElementById("delYes");
-const delNo  = document.getElementById("delNo");
+const delNo = document.getElementById("delNo");
 
-[editModal, colModal, deleteModal].forEach(el => { if (el) el.hidden = true; });
+[editModal, colModal, deleteModal].forEach((el) => {
+  if (el) el.hidden = true;
+});
 
-// ==================== Lägesbyte ====================
-async function setMode(newMode, datasetId=null){
+
+/* ===================== Lägesbyte ===================== */
+
+async function setMode(newMode, datasetId = null) {
   MODE = newMode;
 
-  if(MODE==="normal"){
+  if (MODE === "normal") {
     CURRENT_DEMO = null;
     state = await serverLoad();
     if (modeHint) modeHint.textContent = "Läge: Normal (server)";
@@ -176,132 +315,175 @@ async function setMode(newMode, datasetId=null){
     const id = normalizeDatasetId(datasetId);
     CURRENT_DEMO = id;
     const label = DATASET_LABELS[id] || id;
-    const file  = DATASETS[id];
-    if(!file){ alert("Okänt dataset: "+id); return; }
-
-    try{
-      // Buffert finns?
+    const file = DATASETS[id];
+    if (!file) {
+      alert("Okänt dataset: " + id);
+      return;
+    }
+    try {
       state = demoLoad(id) || normalizeState(await fetchJSON(file));
       demoSave(id, state);
       if (modeHint) modeHint.textContent = `Läge: Demo (${label}) – sessionStorage`;
-    }catch(e){
-      alert("Kunde inte ladda dataset: "+label+"\n\n"+e.message);
+    } catch (e) {
+      alert("Kunde inte ladda dataset: " + label + "\n\n" + e.message);
       return;
     }
   }
 
-  UNDO_STACK.length=0; REDO_STACK.length=0;
-  render(); updateHistoryButtons();
+  UNDO_STACK.length = 0;
+  REDO_STACK.length = 0;
+  render();
+  updateHistoryButtons();
 }
 
-// ===== Lägesknappar =====
 
-// Byt läge direkt via dropdownen
+/* ===================== Lägesknappar ===================== */
+
 datasetSelect?.addEventListener("change", async (e) => {
-  const raw = e.target.value;                // "" | "normal" | "demo_*"
+  const raw = e.target.value;
   const val = normalizeDatasetId(raw);
   if (val === "normal") await setMode("normal");
-  else if (val)         await setMode("demo", val);
+  else if (val) await setMode("demo", val);
 });
 
-// (Legacy-knappar lämnas orörda om de råkar finnas i HTML)
 applyDatasetBtn?.addEventListener("click", async () => {
   const raw = datasetSelect.value;
   const val = normalizeDatasetId(raw);
   if (val === "normal") await setMode("normal");
-  else                  await setMode("demo", val);
+  else await setMode("demo", val);
 });
+
 exitDemoBtn?.addEventListener("click", async () => {
   datasetSelect.value = "normal";
   await setMode("normal");
 });
 
-// ==================== Render ====================
-function updateHistoryButtons(){
-  if(undoBtn) undoBtn.disabled=!UNDO_STACK.length;
-  if(redoBtn) undoBtn && (redoBtn.disabled=!REDO_STACK.length);
+
+/* ===================== Render ===================== */
+
+function updateHistoryButtons() {
+  if (undoBtn) undoBtn.disabled = !UNDO_STACK.length;
+  if (redoBtn) redoBtn.disabled = !REDO_STACK.length;
 }
 
-function render(){
+function render() {
   state = normalizeState(state);
   const cols = state.cols;
 
-  // kolumnselect för skapa-kort
-  colSelect.innerHTML = "";
-  cols.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c.id; opt.textContent = c.name;
-    colSelect.appendChild(opt);
-  });
-
-  board.innerHTML = "";
-  cols.forEach((col, idx) => {
-    const wrap = document.createElement("div");
-    wrap.className = "col";
-    wrap.dataset.id = col.id;
-
-    // Accentfärg per kolumn: kända id:n fasta, nya får en palett
-    const ACCENTS = { todo:"#f59e0b", doing:"#3b82f6", done:"#10b981" };
-    const PALETTE = ["#a855f7","#ef4444","#06b6d4","#84cc16","#f97316","#0ea5e9","#14b8a6","#eab308","#22c55e"];
-    const accent  = ACCENTS[col.id] ?? PALETTE[idx % PALETTE.length];
-    wrap.style.setProperty("--accent", accent);
-
-    // dra-och-släpp för kolumner
-    wrap.draggable = true;
-    wrap.addEventListener("dragstart", (e) => {
-      if (e.target.closest(".task")) return;
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/col", col.id);
-      wrap.classList.add("col-dragging");
+  if (colSelect) {
+    colSelect.innerHTML = "";
+    cols.forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = c.name;
+      colSelect.appendChild(opt);
     });
-    wrap.addEventListener("dragend", () => {
-      wrap.classList.remove("col-dragging");
-      const order = Array.from(board.querySelectorAll(".col")).map(el => el.dataset.id);
-      if (order.length === cols.length && order.some((id,i)=>id!==cols[i].id)) {
-        pushHistory();
-        state.cols = order.map(id => cols.find(c => c.id===id));
-        persist();
-        render();
+  }
+
+  if (board) {
+    board.innerHTML = "";
+    cols.forEach((col, idx) => {
+      const wrap = document.createElement("div");
+      wrap.className = "col";
+      wrap.dataset.id = col.id;
+
+      const ACCENTS = { todo: "#f59e0b", doing: "#3b82f6", done: "#10b981" };
+      const PALETTE = ["#a855f7", "#ef4444", "#06b6d4", "#84cc16", "#f97316", "#0ea5e9", "#14b8a6", "#eab308", "#22c55e"];
+      const accent = ACCENTS[col.id] ?? PALETTE[idx % PALETTE.length];
+      wrap.style.setProperty("--accent", accent);
+
+      // DnD för kolumner
+      wrap.draggable = true;
+      wrap.addEventListener("dragstart", (e) => {
+        if (e.target.closest(".task")) return;
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/col", col.id);
+        wrap.classList.add("col-dragging");
+      });
+      wrap.addEventListener("dragend", () => {
+        wrap.classList.remove("col-dragging");
+        const order = Array.from(board.querySelectorAll(".col")).map((el) => el.dataset.id);
+        if (order.length === cols.length && order.some((id, i) => id !== cols[i].id)) {
+          pushHistory();
+          state.cols = order.map((id) => cols.find((c) => c.id === id));
+          persist();
+          render();
+        }
+      });
+
+      const h2 = document.createElement("h2");
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = col.name;
+      const menu = document.createElement("button");
+      menu.className = "drag-handle";
+      menu.textContent = "⋮";
+      menu.title = "Redigera kolumn";
+      menu.onclick = (ev) => {
+        ev.stopPropagation();
+        openColModal(col.id);
+      };
+      h2.appendChild(nameSpan);
+      h2.appendChild(menu);
+      wrap.appendChild(h2);
+
+      const dz = document.createElement("div");
+      dz.className = "dropzone";
+      dz.addEventListener("dragover", (e) => {
+        if (e.dataTransfer?.types?.includes("text/task")) e.preventDefault();
+      });
+      dz.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData("text/plain");
+        const t = state.tasks.find((x) => x.id === id);
+        if (t && t.col !== col.id) {
+          pushHistory();
+          t.col = col.id;
+          persist();
+          render();
+        }
+      });
+
+      const items = state.tasks.filter((t) => t.col === col.id);
+      if (!items.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Inga uppgifter";
+        dz.appendChild(empty);
+      } else {
+        items.forEach((t) => dz.appendChild(taskCard(t, col)));
       }
+
+      wrap.appendChild(dz);
+      board.appendChild(wrap);
     });
-
-    const h2 = document.createElement("h2");
-    const nameSpan = document.createElement("span"); nameSpan.textContent = col.name;
-    const menu = document.createElement("button"); menu.className="drag-handle"; menu.textContent="⋮"; menu.title="Redigera kolumn";
-    menu.onclick = (ev)=>{ ev.stopPropagation(); openColModal(col.id); };
-    h2.appendChild(nameSpan); h2.appendChild(menu);
-    wrap.appendChild(h2);
-
-    const dz = document.createElement("div"); dz.className="dropzone";
-    dz.addEventListener("dragover",(e)=>{ if(e.dataTransfer?.types?.includes("text/task")) e.preventDefault(); });
-    dz.addEventListener("drop",(e)=>{
-      e.preventDefault();
-      const id = e.dataTransfer.getData("text/plain");
-      const t = state.tasks.find(x=>x.id===id);
-      if(t && t.col!==col.id){ pushHistory(); t.col=col.id; persist(); render(); }
-    });
-
-    const items = state.tasks.filter(t=>t.col===col.id);
-    if(!items.length){ const empty=document.createElement("div"); empty.className="empty"; empty.textContent="Inga uppgifter"; dz.appendChild(empty); }
-    else items.forEach(t => dz.appendChild(taskCard(t,col)));
-
-    wrap.appendChild(dz);
-    board.appendChild(wrap);
-  });
+  }
 
   updateHistoryButtons();
 }
 
-function taskCard(task,col){
-  const el=document.createElement("div"); el.className="card task"; el.draggable=true;
-  el.ondragstart=e=>{ e.dataTransfer.setData("text/plain",task.id); e.dataTransfer.setData("text/task","1"); };
+function taskCard(task, col) {
+  const el = document.createElement("div");
+  el.className = "card task";
+  el.draggable = true;
+  el.ondragstart = (e) => {
+    e.dataTransfer.setData("text/plain", task.id);
+    e.dataTransfer.setData("text/task", "1");
+  };
 
-  const title=document.createElement("div"); title.className="title"; title.textContent=task.title;
-  const desc=document.createElement("div"); desc.className="desc"; desc.textContent=task.desc||"";
-  const meta=document.createElement("div"); meta.className="meta";
-  const tag=document.createElement("span"); tag.className="tag"; tag.textContent=col.name;
+  const title = document.createElement("div");
+  title.className = "title";
+  title.textContent = task.title;
 
-  // Toppbar: trepunkter (redigera) + kryss (ta bort)
+  const desc = document.createElement("div");
+  desc.className = "desc";
+  desc.textContent = task.desc || "";
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  const tag = document.createElement("span");
+  tag.className = "tag";
+  tag.textContent = col.name;
+
   const topbar = document.createElement("div");
   topbar.className = "card-topbar";
 
@@ -309,17 +491,22 @@ function taskCard(task,col){
   menuBtn.className = "drag-handle";
   menuBtn.textContent = "⋮";
   menuBtn.title = "Redigera";
-  menuBtn.onclick = (ev)=>{ ev.stopPropagation(); openTaskModal(task.id); };
+  menuBtn.onclick = (ev) => {
+    ev.stopPropagation();
+    openTaskModal(task.id);
+  };
 
   const delBtn = document.createElement("button");
   delBtn.className = "close-btn";
   delBtn.textContent = "×";
   delBtn.title = "Ta bort";
-  delBtn.onclick = (ev)=>{ ev.stopPropagation(); openDeleteModal(task.id); };
+  delBtn.onclick = (ev) => {
+    ev.stopPropagation();
+    openDeleteModal(task.id);
+  };
 
   topbar.appendChild(menuBtn);
   topbar.appendChild(delBtn);
-
   meta.appendChild(tag);
 
   el.appendChild(topbar);
@@ -329,87 +516,235 @@ function taskCard(task,col){
   return el;
 }
 
-// ==================== Modaler & events ====================
-let editingTaskId=null;
-function openTaskModal(id){ const t=state.tasks.find(x=>x.id===id); if(!t) return; editingTaskId=id; editTitle.value=t.title||""; editDesc.value=t.desc||""; editModal.hidden=false; editTitle.focus(); }
-function closeTaskModal(){ editingTaskId=null; editModal.hidden=true; }
-saveEdit.onclick=()=>{ const t=state.tasks.find(x=>x.id===editingTaskId); if(!t) return; const nt=(editTitle.value||"").trim(); const nd=(editDesc.value||"").trim(); if(t.title!==nt||t.desc!==nd) pushHistory(); t.title=nt; t.desc=nd; persist(); closeTaskModal(); render(); };
-cancelEdit.onclick=closeTaskModal;
 
-let editingColId=null;
-function openColModal(id){ const c=state.cols.find(x=>x.id===id); if(!c) return; editingColId=id; colEditName.value=c.name||""; colMoveWrap.hidden=true; colMoveSelect.innerHTML=""; colDelete.textContent="Ta bort"; colDelete.dataset.stage="initial"; colModal.hidden=false; colEditName.focus(); }
-function closeColModal(){ editingColId=null; colModal.hidden=true; colMoveWrap.hidden=true; colDelete.textContent="Ta bort"; colDelete.dataset.stage="initial"; }
-colSave.onclick=()=>{ const c=state.cols.find(x=>x.id===editingColId); if(!c) return; const name=(colEditName.value||"").trim(); if(!name) return; if(c.name!==name) pushHistory(); c.name=name; persist(); closeColModal(); render(); };
-colCancel.onclick=closeColModal;
-colDelete.onclick=()=>{ const col=state.cols.find(x=>x.id===editingColId); if(!col) return;
-  const hasTasks=state.tasks.some(t=>t.col===col.id);
-  const others=state.cols.filter(x=>x.id!==col.id);
-  if(!hasTasks){
+/* ===================== Modaler & events ===================== */
+
+let editingTaskId = null;
+function openTaskModal(id) {
+  const t = state.tasks.find((x) => x.id === id);
+  if (!t) return;
+  editingTaskId = id;
+  if (editTitle) editTitle.value = t.title || "";
+  if (editDesc) editDesc.value = t.desc || "";
+  if (editModal) {
+    editModal.hidden = false;
+    editTitle?.focus();
+  }
+}
+function closeTaskModal() {
+  editingTaskId = null;
+  if (editModal) editModal.hidden = true;
+}
+
+if (saveEdit) {
+  saveEdit.onclick = () => {
+    const t = state.tasks.find((x) => x.id === editingTaskId);
+    if (!t) return;
+    const nt = (editTitle?.value || "").trim();
+    const nd = (editDesc?.value || "").trim();
+    if (t.title !== nt || t.desc !== nd) pushHistory();
+    t.title = nt;
+    t.desc = nd;
+    persist();
+    closeTaskModal();
+    render();
+  };
+}
+if (cancelEdit) cancelEdit.onclick = closeTaskModal;
+
+let editingColId = null;
+function openColModal(id) {
+  const c = state.cols.find((x) => x.id === id);
+  if (!c) return;
+  editingColId = id;
+  if (colEditName) colEditName.value = c.name || "";
+  if (colMoveWrap) colMoveWrap.hidden = true;
+  if (colMoveSelect) colMoveSelect.innerHTML = "";
+  if (colDelete) {
+    colDelete.textContent = "Ta bort";
+    colDelete.dataset.stage = "initial";
+  }
+  if (colModal) {
+    colModal.hidden = false;
+    colEditName?.focus();
+  }
+}
+function closeColModal() {
+  editingColId = null;
+  if (colModal) colModal.hidden = true;
+  if (colMoveWrap) colMoveWrap.hidden = true;
+  if (colDelete) {
+    colDelete.textContent = "Ta bort";
+    colDelete.dataset.stage = "initial";
+  }
+}
+
+if (colSave) {
+  colSave.onclick = () => {
+    const c = state.cols.find((x) => x.id === editingColId);
+    if (!c) return;
+    const name = (colEditName?.value || "").trim();
+    if (!name) return;
+    if (c.name !== name) pushHistory();
+    c.name = name;
+    persist();
+    closeColModal();
+    render();
+  };
+}
+if (colCancel) colCancel.onclick = closeColModal;
+
+if (colDelete) {
+  colDelete.onclick = () => {
+    const col = state.cols.find((x) => x.id === editingColId);
+    if (!col) return;
+    const hasTasks = state.tasks.some((t) => t.col === col.id);
+    const others = state.cols.filter((x) => x.id !== col.id);
+
+    if (!hasTasks) {
+      pushHistory();
+      state.cols = state.cols.filter((x) => x.id !== col.id);
+      if (!state.cols.length) state.cols = clone(DEFAULT_COLS);
+      persist();
+      closeColModal();
+      render();
+      return;
+    }
+
+    if (!others.length) {
+      alert("Det finns uppgifter i kolumnen men ingen annan kolumn att flytta till. Skapa en ny kolumn först.");
+      return;
+    }
+
+    if (colDelete.dataset.stage !== "confirm") {
+      if (colMoveSelect) {
+        colMoveSelect.innerHTML = "";
+        others.forEach((o) => {
+          const opt = document.createElement("option");
+          opt.value = o.id;
+          opt.textContent = o.name;
+          colMoveSelect.appendChild(opt);
+        });
+      }
+      if (colMoveWrap) colMoveWrap.hidden = false;
+      colDelete.textContent = "Bekräfta radering";
+      colDelete.dataset.stage = "confirm";
+      return;
+    }
+
+    const target = colMoveSelect?.value;
+    if (!target) return;
     pushHistory();
-    state.cols=state.cols.filter(x=>x.id!==col.id);
-    if(!state.cols.length) state.cols=clone(DEFAULT_COLS);
-    persist(); closeColModal(); render(); return;
+    state.tasks.forEach((t) => {
+      if (t.col === col.id) t.col = target;
+    });
+    state.cols = state.cols.filter((x) => x.id !== col.id);
+    if (!state.cols.length) state.cols = clone(DEFAULT_COLS);
+    persist();
+    closeColModal();
+    render();
+  };
+}
+
+let pendingDeleteTaskId = null;
+function openDeleteModal(id) {
+  pendingDeleteTaskId = id;
+  if (deleteModal) deleteModal.hidden = false;
+}
+function closeDeleteModal() {
+  pendingDeleteTaskId = null;
+  if (deleteModal) deleteModal.hidden = true;
+}
+
+if (delYes) {
+  delYes.onclick = () => {
+    pushHistory();
+    state.tasks = state.tasks.filter((t) => t.id !== pendingDeleteTaskId);
+    persist();
+    closeDeleteModal();
+    render();
+  };
+}
+if (delNo) delNo.onclick = closeDeleteModal;
+
+
+/* ===================== Form handlers ===================== */
+
+if (taskForm) {
+  taskForm.onsubmit = (e) => {
+    e.preventDefault();
+    state = normalizeState(state);
+    const title = document.getElementById("title").value.trim();
+    const desc = document.getElementById("desc").value.trim();
+    const col = document.getElementById("col").value || state.cols[0].id;
+    if (!title) return;
+    pushHistory();
+    state.tasks.push({ id: uid(), title, desc, col });
+    persist();
+    render();
+    taskForm.reset();
+  };
+}
+
+if (colForm) {
+  colForm.onsubmit = (e) => {
+    e.preventDefault();
+    const name = document.getElementById("colName").value.trim();
+    if (!name) return;
+    pushHistory();
+    state.cols.push({ id: uid(), name });
+    persist();
+    render();
+    colForm.reset();
+  };
+}
+
+if (exportBtn) {
+  exportBtn.onclick = () => {
+    const blob = new Blob([JSON.stringify(normalizeState(state), null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "kanban-export.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+}
+
+if (clearBtn) {
+  clearBtn.onclick = () => {
+    if (confirm("Rensa allt?")) {
+      pushHistory();
+      state = normalizeState({ cols: clone(DEFAULT_COLS), tasks: [] });
+      persist();
+      render();
+    }
+  };
+}
+
+// Undo/Redo-knappar (om de finns på sidan)
+undoBtn && (undoBtn.onclick = () => undo());
+redoBtn && (redoBtn.onclick = () => redo());
+
+// Tangentbordsgenvägar
+window.addEventListener("keydown", (e) => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if (ctrl && e.key.toLowerCase() === "z" && !e.shiftKey) {
+    e.preventDefault(); undo();
+  } else if ((ctrl && e.key.toLowerCase() === "y") || (ctrl && e.shiftKey && e.key.toLowerCase() === "z")) {
+    e.preventDefault(); redo();
   }
-  if(!others.length){ alert("Det finns uppgifter i kolumnen men ingen annan kolumn att flytta till. Skapa en ny kolumn först."); return; }
-  if(colDelete.dataset.stage!=="confirm"){
-    colMoveSelect.innerHTML="";
-    others.forEach(o=>{ const opt=document.createElement("option"); opt.value=o.id; opt.textContent=o.name; colMoveSelect.appendChild(opt); });
-    colMoveWrap.hidden=false; colDelete.textContent="Bekräfta radering"; colDelete.dataset.stage="confirm"; return;
-  }
-  const target=colMoveSelect.value; if(!target) return;
-  pushHistory();
-  state.tasks.forEach(t=>{ if(t.col===col.id) t.col=target; });
-  state.cols=state.cols.filter(x=>x.id!==col.id);
-  if(!state.cols.length) state.cols=clone(DEFAULT_COLS);
-  persist(); closeColModal(); render();
-};
-
-let pendingDeleteTaskId=null;
-function openDeleteModal(id){ pendingDeleteTaskId=id; deleteModal.hidden=false; }
-function closeDeleteModal(){ pendingDeleteTaskId=null; deleteModal.hidden=true; }
-delYes.onclick=()=>{ pushHistory(); state.tasks=state.tasks.filter(t=>t.id!==pendingDeleteTaskId); persist(); closeDeleteModal(); render(); };
-delNo.onclick=closeDeleteModal;
-
-// Form handlers
-taskForm.onsubmit=e=>{
-  e.preventDefault();
-  state = normalizeState(state);
-  const title=document.getElementById("title").value.trim();
-  const desc=document.getElementById("desc").value.trim();
-  const col=document.getElementById("col").value || state.cols[0].id;
-  if(!title) return;
-  pushHistory();
-  state.tasks.push({ id: uid(), title, desc, col });
-  persist();
-  render();
-  taskForm.reset();
-};
-
-colForm.onsubmit=e=>{
-  e.preventDefault();
-  const name=document.getElementById("colName").value.trim();
-  if(!name) return;
-  pushHistory();
-  state.cols.push({ id: uid(), name });
-  persist();
-  render();
-  colForm.reset();
-};
-
-exportBtn.onclick=()=>{ const blob=new Blob([JSON.stringify(normalizeState(state),null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kanban-export.json"; a.click(); URL.revokeObjectURL(url); };
-clearBtn.onclick=()=>{ if(confirm("Rensa allt?")){ pushHistory(); state=normalizeState({ cols: clone(DEFAULT_COLS), tasks: [] }); persist(); render(); } };
-toPortalBtn?.addEventListener("click",(e)=>{ e.preventDefault(); location.assign("/"); });
-
-if(undoBtn) undoBtn.onclick=()=>undo();
-if(redoBtn) redoBtn.onclick=()=>redo();
-
-window.addEventListener("keydown",(e)=>{ const ctrl=e.ctrlKey||e.metaKey;
-  if(ctrl && e.key.toLowerCase()==="z" && !e.shiftKey){ e.preventDefault(); undo(); }
-  else if((ctrl && e.key.toLowerCase()==="y") || (ctrl && e.shiftKey && e.key.toLowerCase()==="z")){ e.preventDefault(); redo(); }
 });
 
-// ==================== Init ====================
-(async function init(){
+
+/* ===================== Init ===================== */
+
+(async function init() {
+  setupToPortalButton();
+  await setupBackButton();
+
+  // Kanban-läge endast om kontroller finns på sidan
   const initial = datasetSelect?.value || "normal";
-  if(initial==="normal") await setMode("normal"); else await setMode("demo", normalizeDatasetId(initial));
+  if (initial === "normal") await setMode("normal");
+  else await setMode("demo", normalizeDatasetId(initial));
 })();
