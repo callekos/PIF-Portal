@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Under uppbyggnad – PIF-portalen</title>
 
-  <!-- Gemensam stil (samma sökväg som i din mall) -->
+  <!-- Gemensam stil -->
   <link rel="stylesheet" href="../../assets/css/common.css" />
 
   <style>
@@ -19,7 +19,7 @@
       margin: 0 auto;
       padding: 24px;
       display: grid;
-      place-items: center;        /* centrera kortet vert/hor */
+      place-items: center; /* centrera kortet vert/hor */
     }
 
     /* Headerknapparnas placering (matchar övriga sidor) */
@@ -33,6 +33,25 @@
       align-items: center;
       gap: 8px;
     }
+
+    /* === KNAPPSTIL – identiskt med testsida.html === */
+    .btn{
+      display:inline-block;
+      padding:.45rem .8rem;
+      border:none;               /* viktig: ta bort webbläsarens kantlinje */
+      border-radius:8px;
+      cursor:pointer;
+      font:inherit;
+      background:#2563eb;        /* primär (sekundär override nedan) */
+      color:#fff;
+      transition:background .15s ease;
+    }
+    .btn:hover{ background:#1d4ed8; }
+    .btn.secondary{
+      background:#e5e7eb;
+      color:#111827;
+    }
+    .btn.secondary:hover{ background:#d1d5db; }
 
     /* Kortet i mitten */
     .wip-card{
@@ -68,20 +87,18 @@
       line-height: 1;
     }
 
-    /* Liten, ren illustration (inline SVG) */
+    /* Liten illustration (inline SVG) */
     .wip-illustration{
       width: 120px;
       height: 120px;
       margin: 0 auto 4px;
       position: relative;
     }
-    /* Skugga under ikonen */
     .wip-illustration .shadow {
       fill: rgba(0,0,0,.08);
       animation: pulse 2.8s ease-in-out infinite;
       transform-origin: center;
     }
-    /* Mjuk vipp-animation på konen */
     .wip-illustration .cone {
       transform-origin: 60px 60px;
       animation: tilt 2.8s ease-in-out infinite;
@@ -96,7 +113,7 @@
     }
   </style>
 </head>
-<body>
+<body data-home="/portal/">
   <div class="wrap">
 
     <!-- HEADER -->
@@ -116,18 +133,12 @@
       <section class="wip-card" aria-labelledby="wip-title">
         <div class="wip-illustration" aria-hidden="true">
           <svg viewBox="0 0 120 120" width="120" height="120">
-            <!-- mjuk skugga -->
             <ellipse class="shadow" cx="60" cy="96" rx="28" ry="8"/>
-            <!-- varningskon -->
             <g class="cone">
-              <!-- basplatta -->
               <rect x="34" y="86" width="52" height="10" rx="4" fill="#cbd5e1"/>
-              <!-- konkropp -->
               <path d="M60 20 L84 86 L36 86 Z" fill="#f97316"/>
-              <!-- vita band -->
               <path d="M54 36 H66 L71 52 H49 Z" fill="#fff" opacity=".9"/>
               <path d="M51 62 H69 L73 74 H47 Z" fill="#fff" opacity=".9"/>
-              <!-- kantlinje svag -->
               <path d="M60 20 L84 86 L36 86 Z" fill="none" stroke="#ea580c" stroke-width="2" opacity=".6"/>
             </g>
           </svg>
@@ -153,7 +164,7 @@
     </footer>
   </div>
 
-  <!-- Gemensamt script (samma sökväg som i din mall) -->
+  <!-- Gemensamt script -->
   <script src="../../kanban/app.js"></script>
 </body>
 </html>
